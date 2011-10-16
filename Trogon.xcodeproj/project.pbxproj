@@ -17,6 +17,7 @@
 		6451A388144B2E74003CCFC9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6451A368144B2E74003CCFC9 /* Cocoa.framework */; };
 		6451A390144B2E74003CCFC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6451A38E144B2E74003CCFC9 /* InfoPlist.strings */; };
 		6451A393144B2E74003CCFC9 /* TrogonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A392144B2E74003CCFC9 /* TrogonTests.m */; };
+		6451A39E144B2F01003CCFC9 /* Rvm.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A39D144B2F01003CCFC9 /* Rvm.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,20 +36,22 @@
 		6451A36B144B2E74003CCFC9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		6451A36C144B2E74003CCFC9 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		6451A36D144B2E74003CCFC9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		6451A370144B2E74003CCFC9 /* Trogon-Info.plist */ = {isa = PBXFileReference; path = "Trogon-Info.plist"; sourceTree = "<group>"; };
+		6451A370144B2E74003CCFC9 /* Trogon-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Trogon-Info.plist"; sourceTree = "<group>"; };
 		6451A372144B2E74003CCFC9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6451A374144B2E74003CCFC9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		6451A376144B2E74003CCFC9 /* Trogon-Prefix.pch */ = {isa = PBXFileReference; path = "Trogon-Prefix.pch"; sourceTree = "<group>"; };
+		6451A376144B2E74003CCFC9 /* Trogon-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Trogon-Prefix.pch"; sourceTree = "<group>"; };
 		6451A378144B2E74003CCFC9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		6451A37A144B2E74003CCFC9 /* AppDelegate.h */ = {isa = PBXFileReference; path = AppDelegate.h; sourceTree = "<group>"; };
+		6451A37A144B2E74003CCFC9 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		6451A37B144B2E74003CCFC9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		6451A37E144B2E74003CCFC9 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		6451A385144B2E74003CCFC9 /* TrogonTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrogonTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6451A386144B2E74003CCFC9 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		6451A38D144B2E74003CCFC9 /* TrogonTests-Info.plist */ = {isa = PBXFileReference; path = "TrogonTests-Info.plist"; sourceTree = "<group>"; };
+		6451A38D144B2E74003CCFC9 /* TrogonTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TrogonTests-Info.plist"; sourceTree = "<group>"; };
 		6451A38F144B2E74003CCFC9 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		6451A391144B2E74003CCFC9 /* TrogonTests.h */ = {isa = PBXFileReference; path = TrogonTests.h; sourceTree = "<group>"; };
+		6451A391144B2E74003CCFC9 /* TrogonTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrogonTests.h; sourceTree = "<group>"; };
 		6451A392144B2E74003CCFC9 /* TrogonTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrogonTests.m; sourceTree = "<group>"; };
+		6451A39C144B2F01003CCFC9 /* Rvm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rvm.h; sourceTree = "<group>"; };
+		6451A39D144B2F01003CCFC9 /* Rvm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Rvm.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,6 +121,8 @@
 				6451A37B144B2E74003CCFC9 /* AppDelegate.m */,
 				6451A37D144B2E74003CCFC9 /* MainMenu.xib */,
 				6451A36F144B2E74003CCFC9 /* Supporting Files */,
+				6451A39C144B2F01003CCFC9 /* Rvm.h */,
+				6451A39D144B2F01003CCFC9 /* Rvm.m */,
 			);
 			path = Trogon;
 			sourceTree = "<group>";
@@ -199,6 +204,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Lark Software";
 			};
 			buildConfigurationList = 6451A35E144B2E74003CCFC9 /* Build configuration list for PBXProject "Trogon" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -262,6 +268,7 @@
 			files = (
 				6451A375144B2E74003CCFC9 /* main.m in Sources */,
 				6451A37C144B2E74003CCFC9 /* AppDelegate.m in Sources */,
+				6451A39E144B2F01003CCFC9 /* Rvm.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
