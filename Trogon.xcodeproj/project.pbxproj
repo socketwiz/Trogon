@@ -18,6 +18,9 @@
 		6451A390144B2E74003CCFC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6451A38E144B2E74003CCFC9 /* InfoPlist.strings */; };
 		6451A393144B2E74003CCFC9 /* TrogonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A392144B2E74003CCFC9 /* TrogonTests.m */; };
 		6451A39E144B2F01003CCFC9 /* Rvm.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A39D144B2F01003CCFC9 /* Rvm.m */; };
+		64ADDFED144B8E160099E47A /* GemSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADDFEC144B8E160099E47A /* GemSet.m */; };
+		64ADDFF1144B8E1F0099E47A /* Gem.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADDFF0144B8E1F0099E47A /* Gem.m */; };
+		64ADDFFE144B98080099E47A /* NSString+trimLeadingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +55,12 @@
 		6451A392144B2E74003CCFC9 /* TrogonTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrogonTests.m; sourceTree = "<group>"; };
 		6451A39C144B2F01003CCFC9 /* Rvm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rvm.h; sourceTree = "<group>"; };
 		6451A39D144B2F01003CCFC9 /* Rvm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Rvm.m; sourceTree = "<group>"; };
+		64ADDFEB144B8E160099E47A /* GemSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GemSet.h; sourceTree = "<group>"; };
+		64ADDFEC144B8E160099E47A /* GemSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GemSet.m; sourceTree = "<group>"; };
+		64ADDFEF144B8E1F0099E47A /* Gem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gem.h; sourceTree = "<group>"; };
+		64ADDFF0144B8E1F0099E47A /* Gem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Gem.m; sourceTree = "<group>"; };
+		64ADDFFC144B98080099E47A /* NSString+trimLeadingWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+trimLeadingWhitespace.h"; sourceTree = "<group>"; };
+		64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+trimLeadingWhitespace.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,10 +128,16 @@
 			children = (
 				6451A37A144B2E74003CCFC9 /* AppDelegate.h */,
 				6451A37B144B2E74003CCFC9 /* AppDelegate.m */,
+				64ADDFEF144B8E1F0099E47A /* Gem.h */,
+				64ADDFF0144B8E1F0099E47A /* Gem.m */,
+				64ADDFEB144B8E160099E47A /* GemSet.h */,
+				64ADDFEC144B8E160099E47A /* GemSet.m */,
 				6451A37D144B2E74003CCFC9 /* MainMenu.xib */,
-				6451A36F144B2E74003CCFC9 /* Supporting Files */,
+				64ADDFFC144B98080099E47A /* NSString+trimLeadingWhitespace.h */,
+				64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */,
 				6451A39C144B2F01003CCFC9 /* Rvm.h */,
 				6451A39D144B2F01003CCFC9 /* Rvm.m */,
+				6451A36F144B2E74003CCFC9 /* Supporting Files */,
 			);
 			path = Trogon;
 			sourceTree = "<group>";
@@ -269,6 +284,9 @@
 				6451A375144B2E74003CCFC9 /* main.m in Sources */,
 				6451A37C144B2E74003CCFC9 /* AppDelegate.m in Sources */,
 				6451A39E144B2F01003CCFC9 /* Rvm.m in Sources */,
+				64ADDFED144B8E160099E47A /* GemSet.m in Sources */,
+				64ADDFF1144B8E1F0099E47A /* Gem.m in Sources */,
+				64ADDFFE144B98080099E47A /* NSString+trimLeadingWhitespace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,6 +460,7 @@
 				6451A398144B2E74003CCFC9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		6451A399144B2E74003CCFC9 /* Build configuration list for PBXNativeTarget "TrogonTests" */ = {
 			isa = XCConfigurationList;
@@ -450,6 +469,7 @@
 				6451A39B144B2E74003CCFC9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
