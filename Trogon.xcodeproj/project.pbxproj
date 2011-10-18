@@ -28,6 +28,7 @@
 		64ADDFF1144B8E1F0099E47A /* Gem.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADDFF0144B8E1F0099E47A /* Gem.m */; };
 		64ADDFFE144B98080099E47A /* NSString+trimLeadingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */; };
 		64ADE004144BB1940099E47A /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADE003144BB1940099E47A /* BackgroundView.m */; };
+		64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,8 @@
 		64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+trimLeadingWhitespace.m"; sourceTree = "<group>"; };
 		64ADE002144BB1940099E47A /* BackgroundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundView.h; sourceTree = "<group>"; };
 		64ADE003144BB1940099E47A /* BackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundView.m; sourceTree = "<group>"; };
+		64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+trimTrailingWhitespace.h"; sourceTree = "<group>"; };
+		64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+trimTrailingWhitespace.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +164,8 @@
 				64ADE003144BB1940099E47A /* BackgroundView.m */,
 				64ADDFFC144B98080099E47A /* NSString+trimLeadingWhitespace.h */,
 				64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */,
+				64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */,
+				64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */,
 				6451A39C144B2F01003CCFC9 /* Rvm.h */,
 				6451A39D144B2F01003CCFC9 /* Rvm.m */,
 				64170251144BBD3300F7B1F7 /* RvmSheet.xib */,
@@ -323,6 +328,7 @@
 				64170249144BBC8200F7B1F7 /* RvmSheetController.m in Sources */,
 				64170250144BBC9B00F7B1F7 /* GemSheetController.m in Sources */,
 				647F9F72144BBF88005F13C1 /* GemsetSheetController.m in Sources */,
+				64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

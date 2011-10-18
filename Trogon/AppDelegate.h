@@ -40,4 +40,6 @@
 - (IBAction)btnRemoveGemset:(id)sender;
 - (IBAction)btnAddGem:(id)sender;
 - (IBAction)btnRemoveGem:(id)sender;
+
+- (void)reloadInterpreters;
 @end

@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "NSString+trimLeadingWhitespace.h"
+#import "NSString+trimTrailingWhitespace.h"
 
 @implementation AppDelegate
 @synthesize window = _window;
@@ -30,11 +31,25 @@
         _gems = [[NSMutableArray alloc] init];
     }
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadInterpretersNotification:)
+                                                 name:@"TrogonReloadInterpreters" 
+                                               object:nil];
     return self;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [self reloadInterpreters];
+}
+
+- (void)reloadInterpretersNotification:(NSNotification *)notification {
+    [self reloadInterpreters];
+}
+
+- (void)reloadInterpreters {
+    [_rvms removeAllObjects];
+
     NSTask *_task;
     NSPipe *pipe = [NSPipe pipe];
     
@@ -47,12 +62,12 @@
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list", rvmPath];
     [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
     [_task launch];
-
+    
     [_task waitUntilExit];
     
     NSData *outputData = [[pipe fileHandleForReading] readDataToEndOfFile];
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
-
+    
     // pull just the ruby interpreters out of the mess we get back
     for (NSString *line in [outputString componentsSeparatedByString:@"\n"]) {
         // first line is always "rvm rubies" and we don't want it
@@ -165,6 +180,29 @@
 
 - (IBAction)btnRemoveInterpreter:(id)sender {
     NSLog(@"btnRemoveInterpreter");
+    Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    
+    NSTask *_task;
+    NSPipe *pipe = [NSPipe pipe];
+    
+    _task = [[NSTask alloc] init];
+    [_task setLaunchPath:@"/bin/sh"];
+    [_task setStandardInput:[NSPipe pipe]]; // xcode bug, won't exit without this
+    [_task setStandardOutput: pipe];
+    [_task setStandardError: pipe];
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    
+    // strip trailing spaces, [ and ] characters
+    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
+    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"[" withString:@""];
+    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"]" withString:@""];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm remove %@ --archive", rvmPath, interpreter];
+    [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+    [_task launch];
+    
+    [_task waitUntilExit];
+
+    [self reloadInterpreters];
 }
 
 - (IBAction)btnAddGemset:(id)sender {

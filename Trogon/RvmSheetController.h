@@ -7,13 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Rvm.h"
 
 @interface RvmSheetController : NSObject {
     NSView *documentWindow;
-    NSPanel *objectSheet;  
+    NSPanel *objectSheet;
+    
+    NSMutableArray *_interpreters;
+    __weak NSArrayController *aryRvmsController;
 }
 @property (nonatomic, retain) IBOutlet NSView *documentWindow;
 @property (nonatomic, retain) IBOutlet NSPanel *objectSheet;
+@property (retain,readwrite) NSMutableArray *interpreters;
+@property (weak) IBOutlet NSArrayController *aryRvmsController;
 
 - (IBAction)add:(id)sender;
 - (IBAction)cancel:(id)sender;
