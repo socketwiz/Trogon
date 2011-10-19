@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 #import "NSString+trimLeadingWhitespace.h"
 #import "NSString+trimTrailingWhitespace.h"
+#import "Task.h"
 
 @implementation AppDelegate
 @synthesize window = _window;
@@ -22,7 +23,6 @@
 @synthesize aryRvmsController = _aryRvmsController;
 @synthesize aryGemSetsController = _aryGemSetsController;
 
-
 - (id)init {
     self = [super init];
     if (self) {
@@ -35,6 +35,7 @@
                                              selector:@selector(reloadInterpretersNotification:)
                                                  name:@"TrogonReloadInterpreters" 
                                                object:nil];
+
     return self;
 }
 
@@ -49,23 +50,12 @@
 
 - (void)reloadInterpreters {
     [_rvms removeAllObjects];
-
-    NSTask *_task;
-    NSPipe *pipe = [NSPipe pipe];
     
-    _task = [[NSTask alloc] init];
-    [_task setLaunchPath:@"/bin/sh"];
-    [_task setStandardInput:[NSPipe pipe]]; // xcode bug, won't exit without this
-    [_task setStandardOutput: pipe];
-    [_task setStandardError: pipe];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list", rvmPath];
-    [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-    [_task launch];
-    
-    [_task waitUntilExit];
-    
-    NSData *outputData = [[pipe fileHandleForReading] readDataToEndOfFile];
+    NSPipe *output = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+
+    NSData *outputData = [[output fileHandleForReading] readDataToEndOfFile];
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
     
     // pull just the ruby interpreters out of the mess we get back
@@ -92,22 +82,11 @@
         // set the gemset index so the gems list will refresh
         [self.aryGemSetsController setSelectionIndex:0];
 
-        NSTask *_task;
-        NSPipe *pipe = [NSPipe pipe];
-        
-        _task = [[NSTask alloc] init];
-        [_task setLaunchPath:@"/bin/sh"];
-        [_task setStandardInput:[NSPipe pipe]]; // xcode bug, won't exit without this
-        [_task setStandardOutput: pipe];
-        [_task setStandardError: pipe];
         NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
         NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset list", rvmPath, _rvm.interpreter];
-        [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-        [_task launch];
+        NSPipe *output = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
         
-        [_task waitUntilExit];
-        
-        NSData *outputData = [[pipe fileHandleForReading] readDataToEndOfFile];
+        NSData *outputData = [[output fileHandleForReading] readDataToEndOfFile];
         NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
         
         // pull just the ruby gemsets out of the mess we get back
@@ -132,23 +111,12 @@
 
         [_gems removeAllObjects];
         GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
-        
-        NSTask *_task;
-        NSPipe *pipe = [NSPipe pipe];
-        
-        _task = [[NSTask alloc] init];
-        [_task setLaunchPath:@"/bin/sh"];
-        [_task setStandardInput:[NSPipe pipe]]; // xcode bug, won't exit without this
-        [_task setStandardOutput: pipe];
-        [_task setStandardError: pipe];
+
         NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
         NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem list", rvmPath, _rvm.interpreter, gemset.name];
-        [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-        [_task launch];
-        
-        [_task waitUntilExit];
-        
-        NSData *outputData = [[pipe fileHandleForReading] readDataToEndOfFile];
+        NSPipe *ouput = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+
+        NSData *outputData = [[ouput fileHandleForReading] readDataToEndOfFile];
         NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
         
         NSInteger gemCount = 0;
@@ -182,25 +150,10 @@
     NSLog(@"btnRemoveInterpreter");
     Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
     
-    NSTask *_task;
-    NSPipe *pipe = [NSPipe pipe];
-    
-    _task = [[NSTask alloc] init];
-    [_task setLaunchPath:@"/bin/sh"];
-    [_task setStandardInput:[NSPipe pipe]]; // xcode bug, won't exit without this
-    [_task setStandardOutput: pipe];
-    [_task setStandardError: pipe];
-    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    
-    // strip trailing spaces, [ and ] characters
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
-    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"[" withString:@""];
-    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"]" withString:@""];
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm remove %@ --archive", rvmPath, interpreter];
-    [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-    [_task launch];
-    
-    [_task waitUntilExit];
+    (void)[[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
 
     [self reloadInterpreters];
 }

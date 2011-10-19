@@ -29,6 +29,7 @@
 		64ADDFFE144B98080099E47A /* NSString+trimLeadingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */; };
 		64ADE004144BB1940099E47A /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADE003144BB1940099E47A /* BackgroundView.m */; };
 		64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */; };
+		64E790F2144E589C00741803 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E790F1144E589C00741803 /* Task.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,8 @@
 		64ADE003144BB1940099E47A /* BackgroundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundView.m; sourceTree = "<group>"; };
 		64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+trimTrailingWhitespace.h"; sourceTree = "<group>"; };
 		64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+trimTrailingWhitespace.m"; sourceTree = "<group>"; };
+		64E790F0144E589C00741803 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
+		64E790F1144E589C00741803 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +174,8 @@
 				64170251144BBD3300F7B1F7 /* RvmSheet.xib */,
 				64170247144BBC8200F7B1F7 /* RvmSheetController.h */,
 				64170248144BBC8200F7B1F7 /* RvmSheetController.m */,
+				64E790F0144E589C00741803 /* Task.h */,
+				64E790F1144E589C00741803 /* Task.m */,
 				6451A36F144B2E74003CCFC9 /* Supporting Files */,
 			);
 			path = Trogon;
@@ -329,6 +334,7 @@
 				64170250144BBC9B00F7B1F7 /* GemSheetController.m in Sources */,
 				647F9F72144BBF88005F13C1 /* GemsetSheetController.m in Sources */,
 				64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */,
+				64E790F2144E589C00741803 /* Task.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

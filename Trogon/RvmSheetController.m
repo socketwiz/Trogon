@@ -8,6 +8,7 @@
 
 #import "RvmSheetController.h"
 #import "NSString+trimTrailingWhitespace.h"
+#import "Task.h"
 
 @implementation RvmSheetController
 @synthesize aryRvmsController;
@@ -15,27 +16,17 @@
 @synthesize objectSheet;
 @synthesize interpreters = _interpreters;
 
+
 - (void)awakeFromNib {
     if ([_interpreters count] > 0) {
         return;
     }
     
-    NSTask *_task;
-    NSPipe *pipe = [NSPipe pipe];
-    
-    _task = [[NSTask alloc] init];
-    [_task setLaunchPath:@"/bin/sh"];
-    [_task setStandardInput:[NSPipe pipe]]; // xcode bug, won't exit without this
-    [_task setStandardOutput: pipe];
-    [_task setStandardError: pipe];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list known", rvmPath];
-    [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-    [_task launch];
-    
-    [_task waitUntilExit];
-    
-    NSData *outputData = [[pipe fileHandleForReading] readDataToEndOfFile];
+    NSPipe *output = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+
+    NSData *outputData = [[output fileHandleForReading] readDataToEndOfFile];
     NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
     
     // pull just the ruby interpreters out of the mess we get back
@@ -88,30 +79,14 @@
 
 - (IBAction)complete:(id)sender {
     Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
-
-    NSTask *_task;
-    NSPipe *pipe = [NSPipe pipe];
     
-    _task = [[NSTask alloc] init];
-    [_task setLaunchPath:@"/bin/sh"];
-    [_task setStandardInput:[NSPipe pipe]]; // xcode bug, won't exit without this
-    [_task setStandardOutput: pipe];
-    [_task setStandardError: pipe];
-    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    
-    // strip trailing spaces, [ and ] characters
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
     interpreter = [interpreter stringByReplacingOccurrencesOfString:@"[" withString:@""];
     interpreter = [interpreter stringByReplacingOccurrencesOfString:@"]" withString:@""];
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm install %@", rvmPath, interpreter];
-    [_task setArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-    [_task launch];
+    (void)/*NSPipe *output =*/ [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
     
-    [_task waitUntilExit];
-    
-//    NSData *outputData = [[pipe fileHandleForReading] readDataToEndOfFile];
-//    NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
-
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonReloadInterpreters" 
                                                         object:nil];
 
