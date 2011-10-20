@@ -34,7 +34,7 @@
        modalForWindow:[documentWindow window]
         modalDelegate:self
        didEndSelector:@selector(objectSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
+          contextInfo:nil];
 }
 
 - (IBAction)cancel:(id)sender {

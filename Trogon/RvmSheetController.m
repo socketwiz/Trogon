@@ -15,28 +15,38 @@
 @synthesize documentWindow;
 @synthesize objectSheet;
 @synthesize interpreters = _interpreters;
+@synthesize outputInterpreter = _outputInterpreter;
 
 
-- (void)awakeFromNib {
-    if ([_interpreters count] > 0) {
-        return;
-    }
+-(void)readAvailableInterpreters: (NSNotification *)notification {
+    NSData *data;
+    NSString *text;
     
-    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list known", rvmPath];
-    NSPipe *output = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+    data = [[notification object] availableData];
+    text = [[NSString alloc] initWithData:data 
+                                 encoding:NSASCIIStringEncoding];
 
-    NSData *outputData = [[output fileHandleForReading] readDataToEndOfFile];
-    NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
+    [self.outputInterpreter appendString:text];
     
-    // pull just the ruby interpreters out of the mess we get back
-    for (NSString *line in [outputString componentsSeparatedByString:@"\n"]) {
-        if ([line length] > 0 && ![line hasPrefix:@"#"]) {
-            Rvm *aRvm = [[Rvm alloc] init];
-            aRvm.interpreter = line;
-            [_interpreters addObject:aRvm];
-            self.interpreters = _interpreters;
+    if([data length]) {
+        // pull just the ruby interpreters out of the mess we get back
+        for (NSString *line in [self.outputInterpreter componentsSeparatedByString:@"\n"]) {
+            if ([line length] > 0 && ![line hasPrefix:@"#"]) {
+                Rvm *aRvm = [[Rvm alloc] init];
+                aRvm.interpreter = line;
+                [_interpreters addObject:aRvm];
+                self.interpreters = _interpreters;
+            }
         }
+        
+        [[notification object] waitForDataInBackgroundAndNotify];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                        name:NSFileHandleDataAvailableNotification 
+                                                      object:nil];
+        
+        [self.outputInterpreter setString:@""];
     }
 }
 
@@ -44,6 +54,7 @@
     self = [super init];
     if (self) {
         _interpreters = [[NSMutableArray alloc] init];
+        _outputInterpreter = [[NSMutableString alloc] init];
     }
     return self;
 }
@@ -66,11 +77,20 @@
         }
     }
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(readAvailableInterpreters:)
+                                                 name:NSFileHandleDataAvailableNotification 
+                                               object:nil];
+    
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list known", rvmPath];
+    [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+    
     [NSApp beginSheet:objectSheet
        modalForWindow:[documentWindow window]
         modalDelegate:self
        didEndSelector:@selector(objectSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
+          contextInfo:nil];
 }
 
 - (IBAction)cancel:(id)sender {
@@ -78,18 +98,6 @@
 }
 
 - (IBAction)complete:(id)sender {
-    Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
-    
-    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
-    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"[" withString:@""];
-    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"]" withString:@""];
-    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm install %@", rvmPath, interpreter];
-    (void)/*NSPipe *output =*/ [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonReloadInterpreters" 
-                                                        object:nil];
-
     [NSApp endSheet:objectSheet returnCode:NSOKButton];
 }
 
@@ -98,9 +106,23 @@
               contextInfo:(void  *)contextInfo {
     
     if (returnCode == NSOKButton) {
+        Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+        NSDictionary *info = [NSDictionary dictionaryWithObject:rvm forKey:@"rvm"];
+        
+        // we need to cleanup _before_ we send the notification below to create a new sheet
+        // otherwise things get wonky because the new sheet will get created before this one
+        // is cleaned up, then when you dimsiss the new sheet, this one persists and you can't 
+        // get rid of it :(
+        [objectSheet orderOut:self];
+
+        // send it to the AppDelegate so we can display a progress sheet
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonAddRubyInterpreter" 
+                                                            object:self
+                                                          userInfo:info];        
     }
-    
-    [objectSheet orderOut:self];
+    else {
+        [objectSheet orderOut:self];
+    }
 }
 
 @end

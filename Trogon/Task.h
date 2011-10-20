@@ -13,5 +13,5 @@
 }
 
 + (Task *)sharedTask;
-- (NSPipe *)performTask:(NSString *)aTask arguments:(NSArray *)taskArguments;
+- (void)performTask:(NSString *)aTask arguments:(NSArray *)taskArguments;
 @end

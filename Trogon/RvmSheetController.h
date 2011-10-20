@@ -12,6 +12,7 @@
 @interface RvmSheetController : NSObject {
     NSView *documentWindow;
     NSPanel *objectSheet;
+    NSMutableString *_outputInterpreter;
     
     NSMutableArray *_interpreters;
     __weak NSArrayController *aryRvmsController;
@@ -20,9 +21,9 @@
 @property (nonatomic, retain) IBOutlet NSPanel *objectSheet;
 @property (retain,readwrite) NSMutableArray *interpreters;
 @property (weak) IBOutlet NSArrayController *aryRvmsController;
+@property (retain, readwrite) NSMutableString *outputInterpreter;
 
 - (IBAction)add:(id)sender;
 - (IBAction)cancel:(id)sender;
 - (IBAction)complete:(id)sender;
-
 @end

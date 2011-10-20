@@ -30,6 +30,10 @@
 		64ADE004144BB1940099E47A /* BackgroundView.m in Sources */ = {isa = PBXBuildFile; fileRef = 64ADE003144BB1940099E47A /* BackgroundView.m */; };
 		64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */; };
 		64E790F2144E589C00741803 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E790F1144E589C00741803 /* Task.m */; };
+		64E790FD144E5F7000741803 /* ProgressSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64E790FC144E5F7000741803 /* ProgressSheet.xib */; };
+		64E79101144E5F8200741803 /* ProgressSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E79100144E5F8200741803 /* ProgressSheetController.m */; };
+		64E79104144E617600741803 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 64E79102144E617500741803 /* check.png */; };
+		64E79105144E617600741803 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = 64E79103144E617500741803 /* error.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -85,6 +89,11 @@
 		64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+trimTrailingWhitespace.m"; sourceTree = "<group>"; };
 		64E790F0144E589C00741803 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
 		64E790F1144E589C00741803 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
+		64E790FC144E5F7000741803 /* ProgressSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressSheet.xib; sourceTree = "<group>"; };
+		64E790FF144E5F8200741803 /* ProgressSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressSheetController.h; sourceTree = "<group>"; };
+		64E79100144E5F8200741803 /* ProgressSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressSheetController.m; sourceTree = "<group>"; };
+		64E79102144E617500741803 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
+		64E79103144E617500741803 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +178,9 @@
 				64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */,
 				64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */,
 				64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */,
+				64E790FC144E5F7000741803 /* ProgressSheet.xib */,
+				64E790FF144E5F8200741803 /* ProgressSheetController.h */,
+				64E79100144E5F8200741803 /* ProgressSheetController.m */,
 				6451A39C144B2F01003CCFC9 /* Rvm.h */,
 				6451A39D144B2F01003CCFC9 /* Rvm.m */,
 				64170251144BBD3300F7B1F7 /* RvmSheet.xib */,
@@ -184,6 +196,8 @@
 		6451A36F144B2E74003CCFC9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				64E79102144E617500741803 /* check.png */,
+				64E79103144E617500741803 /* error.png */,
 				6451A370144B2E74003CCFC9 /* Trogon-Info.plist */,
 				6451A371144B2E74003CCFC9 /* InfoPlist.strings */,
 				6451A374144B2E74003CCFC9 /* main.m */,
@@ -289,6 +303,9 @@
 				64170252144BBD3300F7B1F7 /* RvmSheet.xib in Resources */,
 				647F9F6D144BBD81005F13C1 /* GemsetSheet.xib in Resources */,
 				647F9F6F144BBD8E005F13C1 /* GemSheet.xib in Resources */,
+				64E790FD144E5F7000741803 /* ProgressSheet.xib in Resources */,
+				64E79104144E617600741803 /* check.png in Resources */,
+				64E79105144E617600741803 /* error.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -335,6 +352,7 @@
 				647F9F72144BBF88005F13C1 /* GemsetSheetController.m in Sources */,
 				64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */,
 				64E790F2144E589C00741803 /* Task.m in Sources */,
+				64E79101144E5F8200741803 /* ProgressSheetController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

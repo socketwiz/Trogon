@@ -12,10 +12,14 @@
 #import "Task.h"
 
 @implementation AppDelegate
+@synthesize sheetControllerProgress = _sheetControllerProgress;
 @synthesize window = _window;
 @synthesize rvms = _rvms;
 @synthesize gemsets = _gemsets;
 @synthesize gems = _gems;
+@synthesize outputInterpreter = _outputInterpreter;
+@synthesize outputGemsetList = _outputGemsetList;
+@synthesize outputGemsetUse = _outputGemsetUse;
 
 @synthesize tblRvm = _tblRvm;
 @synthesize tblGemSet = _tblGemSet;
@@ -29,11 +33,14 @@
         _rvms = [[NSMutableArray alloc] init];
         _gemsets = [[NSMutableArray alloc] init];
         _gems = [[NSMutableArray alloc] init];
+        _outputInterpreter = [[NSMutableString alloc] init];
+        _outputGemsetList = [[NSMutableString alloc] init];
+        _outputGemsetUse = [[NSMutableString alloc] init];
     }
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadInterpretersNotification:)
-                                                 name:@"TrogonReloadInterpreters" 
+                                             selector:@selector(addInterpretersNotification:)
+                                                 name:@"TrogonAddRubyInterpreter" 
                                                object:nil];
 
     return self;
@@ -44,64 +51,100 @@
     [self reloadInterpreters];
 }
 
-- (void)reloadInterpretersNotification:(NSNotification *)notification {
+- (void)addInterpretersNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshInterpretersNotification:)
+                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"install"];
+
+    Rvm *rvm = [[notification userInfo] objectForKey:@"rvm"];
+
+    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
+    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"[" withString:@""];
+    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"]" withString:@""];
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm install %@", rvmPath, interpreter];
+    [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+}
+
+- (void)refreshInterpretersNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:@"TrogonRefreshRubyInterpreter" 
+                                                  object:nil];
+
     [self reloadInterpreters];
 }
 
 - (void)reloadInterpreters {
     [_rvms removeAllObjects];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(readInterpreterData:)
+                                                 name:NSFileHandleDataAvailableNotification 
+                                               object:nil];
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list", rvmPath];
-    NSPipe *output = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+    [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+}
 
-    NSData *outputData = [[output fileHandleForReading] readDataToEndOfFile];
-    NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
+-(void)readInterpreterData: (NSNotification *)notification {
+    NSData *data;
+    NSString *text;
     
-    // pull just the ruby interpreters out of the mess we get back
-    for (NSString *line in [outputString componentsSeparatedByString:@"\n"]) {
-        // first line is always "rvm rubies" and we don't want it
-        if ([line length] > 0 && [line localizedCompare:@"rvm rubies"] != NSOrderedSame) {
-            Rvm *aRvm = [[Rvm alloc] init];
-            NSArray *interpreters = [[line stringByTrimmingLeadingWhitespace] componentsSeparatedByString:@" "];
-            
-            if ([interpreters count] > 1) {
-                aRvm.interpreter = [interpreters objectAtIndex:0];
-                [_rvms addObject:aRvm];
-                self.rvms = _rvms;
+    data = [[notification object] availableData];
+    text = [[NSString alloc] initWithData:data 
+                                 encoding:NSASCIIStringEncoding];
+    
+    [self.outputInterpreter appendString:text];
+    
+    if([data length]) {
+        [[notification object] waitForDataInBackgroundAndNotify];
+    }
+    else {
+        // pull just the ruby interpreters out of the mess we get back
+        for (NSString *line in [self.outputInterpreter componentsSeparatedByString:@"\n"]) {
+            // first line is always "rvm rubies" and we don't want it
+            if ([line length] > 0 && [line localizedCompare:@"rvm rubies"] != NSOrderedSame) {
+                Rvm *aRvm = [[Rvm alloc] init];
+                NSArray *interpreters = [[line stringByTrimmingLeadingWhitespace] componentsSeparatedByString:@" "];
+                
+                if ([interpreters count] > 1) {
+                    aRvm.interpreter = [interpreters objectAtIndex:0];
+                    [_rvms addObject:aRvm];
+                    self.rvms = _rvms;
+                }
             }
         }
+
+        [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                        name:NSFileHandleDataAvailableNotification 
+                                                      object:nil];
+        
+        [self.outputInterpreter setString:@""];
     }
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
 	if ([aNotification object] == _tblRvm) {
-        [_gemsets removeAllObjects];
-        _rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+        if ([[self.aryRvmsController selectedObjects] count] == 0) {
+            return;
+        }
         
-        // set the gemset index so the gems list will refresh
-        [self.aryGemSetsController setSelectionIndex:0];
+        _rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
 
+        [_gemsets removeAllObjects];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(readGemsetList:)
+                                                     name:NSFileHandleDataAvailableNotification 
+                                                   object:nil];
+        
         NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
         NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset list", rvmPath, _rvm.interpreter];
-        NSPipe *output = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-        
-        NSData *outputData = [[output fileHandleForReading] readDataToEndOfFile];
-        NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
-        
-        // pull just the ruby gemsets out of the mess we get back
-        NSInteger cnt = 0;
-        for (NSString *line in [outputString componentsSeparatedByString:@"\n"]) {
-            if (cnt < 2 || [line length] == 0) { // skip first two lines or empty lines
-                cnt++;
-                continue;
-            }
-
-            GemSet *aGemSet = [[GemSet alloc] init];
-            aGemSet.name = [line stringByTrimmingLeadingWhitespace];
-            [_gemsets addObject:aGemSet];
-            self.gemsets = _gemsets;
-        }
+        [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
     }
 
 	if ([aNotification object] == _tblGemSet) {
@@ -109,36 +152,101 @@
             return;
         }
 
-        [_gems removeAllObjects];
         GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+        
+        [_gems removeAllObjects];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(readGemsetUse:)
+                                                     name:NSFileHandleDataAvailableNotification 
+                                                   object:nil];
 
         NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
         NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem list", rvmPath, _rvm.interpreter, gemset.name];
-        NSPipe *ouput = [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+        [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+    }
+}
 
-        NSData *outputData = [[ouput fileHandleForReading] readDataToEndOfFile];
-        NSString *outputString = [[NSString alloc] initWithData:outputData encoding:NSUTF8StringEncoding];
-        
-        NSInteger gemCount = 0;
-        // pull just the ruby gems out of the mess we get back
-        for (NSString *line in [outputString componentsSeparatedByString:@"\n"]) {
-            if ([line length] == 0) { // skip empty lines
+-(void)readGemsetList: (NSNotification *)notification {
+    NSData *data;
+    NSString *text;
+    
+    data = [[notification object] availableData];
+    text = [[NSString alloc] initWithData:data 
+                                 encoding:NSASCIIStringEncoding];
+    
+    [self.outputGemsetList appendString:text];
+    
+    if([data length]) {
+        [[notification object] waitForDataInBackgroundAndNotify];
+    }
+    else {
+        // pull just the ruby gemsets out of the mess we get back
+        NSInteger cnt = 0;
+        for (NSString *line in [self.outputGemsetList componentsSeparatedByString:@"\n"]) {
+            if (cnt < 2 || [line length] == 0) { // skip first two lines or empty lines
+                cnt++;
                 continue;
             }
             
-            Gem *aGem = [[Gem alloc] init];
-            aGem.name = [line stringByTrimmingLeadingWhitespace];
-            [_gems addObject:aGem];
-            self.gems = _gems;
-            gemCount++;
+            GemSet *aGemSet = [[GemSet alloc] init];
+            aGemSet.name = [line stringByTrimmingLeadingWhitespace];
+            [_gemsets addObject:aGemSet];
+            self.gemsets = _gemsets;
+        }
+
+        [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                        name:NSFileHandleDataAvailableNotification 
+                                                      object:nil];
+        
+        [self.outputGemsetList setString:@""];
+        
+        // set the gemset index so the gems list will refresh
+        [self.aryGemSetsController setSelectionIndexes:[NSIndexSet indexSet]];
+//        [self.aryGemSetsController setSelectionIndex:0];
+    }
+}
+
+-(void)readGemsetUse: (NSNotification *)notification {
+    NSData *data;
+    NSString *text;
+    
+    data = [[notification object] availableData];
+    text = [[NSString alloc] initWithData:data 
+                                 encoding:NSASCIIStringEncoding];
+    
+    [self.outputGemsetUse appendString:text];
+    NSInteger gemCount = 0;
+    // pull just the ruby gems out of the mess we get back
+    for (NSString *line in [text componentsSeparatedByString:@"\n"]) {
+        if ([line length] == 0) { // skip empty lines
+            continue;
         }
         
-        if (gemCount == 0) {
+        Gem *aGem = [[Gem alloc] init];
+        aGem.name = [line stringByTrimmingLeadingWhitespace];
+        [_gems addObject:aGem];
+        self.gems = _gems;
+        gemCount++;
+    }
+    
+    
+    if([data length]) {
+        [[notification object] waitForDataInBackgroundAndNotify];
+    }
+    else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                        name:NSFileHandleDataAvailableNotification 
+                                                      object:nil];
+        
+        if ([self.outputGemsetUse length] == 1) {
             Gem *aGem = [[Gem alloc] init];
             aGem.name = @"No gems for this gemset";
             [_gems addObject:aGem];
             self.gems = _gems;
         }
+        
+        [self.outputGemsetUse setString:@""];
     }
 }
 
@@ -147,15 +255,19 @@
 }
 
 - (IBAction)btnRemoveInterpreter:(id)sender {
-    NSLog(@"btnRemoveInterpreter");
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshInterpretersNotification:)
+                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"uninstall"];
+    
     Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
     
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm remove %@ --archive", rvmPath, interpreter];
     (void)[[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
-
-    [self reloadInterpreters];
 }
 
 - (IBAction)btnAddGemset:(id)sender {

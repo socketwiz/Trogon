@@ -1993,6 +1993,9 @@
 			<object class="NSCustomObject" id="142152962">
 				<string key="NSClassName">GemSheetController</string>
 			</object>
+			<object class="NSCustomObject" id="660344263">
+				<string key="NSClassName">ProgressSheetController</string>
+			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
 			<array class="NSMutableArray" key="connectionRecords">
@@ -2734,6 +2737,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">sheetControllerProgress</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="660344263"/>
+					</object>
+					<int key="connectionID">639</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="497391899"/>
 						<reference key="destination" ref="976324537"/>
@@ -2870,6 +2881,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">sheetControllerProgress</string>
+						<reference key="source" ref="53400551"/>
+						<reference key="destination" ref="660344263"/>
+					</object>
+					<int key="connectionID">638</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">documentWindow</string>
 						<reference key="source" ref="157835961"/>
 						<reference key="destination" ref="439893737"/>
@@ -2899,6 +2918,14 @@
 						<reference key="destination" ref="62491309"/>
 					</object>
 					<int key="connectionID">625</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">documentWindow</string>
+						<reference key="source" ref="660344263"/>
+						<reference key="destination" ref="439893737"/>
+					</object>
+					<int key="connectionID">634</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -4210,6 +4237,11 @@
 						<reference key="object" ref="142152962"/>
 						<reference key="parent" ref="0"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">626</int>
+						<reference key="object" ref="660344263"/>
+						<reference key="parent" ref="0"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -4401,6 +4433,7 @@
 				<string key="616.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="617.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="618.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="626.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="74.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -4417,7 +4450,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">625</int>
+			<int key="maxID">639</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

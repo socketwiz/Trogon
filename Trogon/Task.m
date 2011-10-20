@@ -36,21 +36,22 @@ static Task* _sharedTask = nil;
 	return nil;
 }
 
-- (NSPipe *)performTask:(NSString *)aTask arguments:(NSArray *)taskArguments {
+- (void)performTask:(NSString *)aTask arguments:(NSArray *)taskArguments {
     NSTask *_task   = [[NSTask alloc] init];
     NSPipe *input   = [NSPipe pipe];
     NSPipe *output  = [NSPipe pipe];
+    NSFileHandle *_fileHandle;
+    
+    _fileHandle = [output fileHandleForReading];
+    [_fileHandle waitForDataInBackgroundAndNotify];
     
     [_task setLaunchPath:aTask];
     [_task setStandardInput:input]; // Cocoa bug, won't exit without this
     [_task setStandardOutput:output];
     [_task setStandardError:output];
+
     [_task setArguments:taskArguments];
     [_task launch];
-    
-    [_task waitUntilExit];
-    
-    return output;
 }
 
 @end
