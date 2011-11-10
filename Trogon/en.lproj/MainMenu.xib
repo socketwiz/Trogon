@@ -1309,7 +1309,7 @@
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<object class="NSView" key="NSWindowView" id="439893737">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSScrollView" id="631981793">
@@ -1653,7 +1653,6 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{224, 17}, {15, 102}}</string>
 									<reference key="NSSuperview" ref="355873664"/>
-									<reference key="NSNextKeyView"/>
 									<string key="NSReuseIdentifierKey">_NS:1845</string>
 									<reference key="NSTarget" ref="355873664"/>
 									<string key="NSAction">_doScroller:</string>
@@ -1932,7 +1931,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{776, 360}</string>
-					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="118996392"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
@@ -2697,14 +2695,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">tblGemSet</string>
-						<reference key="source" ref="976324537"/>
-						<reference key="destination" ref="553164028"/>
-					</object>
-					<int key="connectionID">585</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">aryGemSetsController</string>
 						<reference key="source" ref="976324537"/>
 						<reference key="destination" ref="842783469"/>
@@ -2742,6 +2732,22 @@
 						<reference key="destination" ref="660344263"/>
 					</object>
 					<int key="connectionID">639</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">tblGem</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="703711139"/>
+					</object>
+					<int key="connectionID">640</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">tblGemset</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="553164028"/>
+					</object>
+					<int key="connectionID">641</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -4450,7 +4456,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">639</int>
+			<int key="maxID">641</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

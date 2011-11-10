@@ -18,12 +18,13 @@
     NSMutableArray *_gems;
     NSMutableString *_outputInterpreter;
     NSMutableString *_outputGemsetList;
-    NSMutableString *_outputGemsetUse;
+    NSMutableString *_outputGemList;
     
     Rvm *_rvm;
     
     __weak NSTableView *_tblRvm;
-    __weak NSTableView *_tblGemSet;
+    __weak NSTableView *_tblGemset;
+    __weak NSTableView *_tblGem;
     __weak NSArrayController *_aryRvmsController;
     __weak NSArrayController *_aryGemSetsController;
     __weak ProgressSheetController *_sheetControllerProgress;
@@ -35,20 +36,22 @@
 @property (retain, readwrite) NSMutableArray *gems;
 @property (retain, readwrite) NSMutableString *outputInterpreter;
 @property (retain, readwrite) NSMutableString *outputGemsetList;
-@property (retain, readwrite) NSMutableString *outputGemsetUse;
+@property (retain, readwrite) NSMutableString *outputGemList;
+@property (retain, readwrite) Rvm *rvm;
 
 @property (weak) IBOutlet NSTableView *tblRvm;
+@property (weak) IBOutlet NSTableView *tblGemset;
+@property (weak) IBOutlet NSTableView *tblGem;
 @property (weak) IBOutlet NSArrayController *aryRvmsController;
-@property (weak) IBOutlet NSTableView *tblGemSet;
 @property (weak) IBOutlet NSArrayController *aryGemSetsController;
 
-- (IBAction)btnAddInterpreter:(id)sender;
+@property (weak) IBOutlet ProgressSheetController *sheetControllerProgress;
+
 - (IBAction)btnRemoveInterpreter:(id)sender;
-- (IBAction)btnAddGemset:(id)sender;
 - (IBAction)btnRemoveGemset:(id)sender;
-- (IBAction)btnAddGem:(id)sender;
 - (IBAction)btnRemoveGem:(id)sender;
 
 - (void)reloadInterpreters;
-@property (weak) IBOutlet ProgressSheetController *sheetControllerProgress;
+- (void)reloadGemsetList;
+- (void)reloadGemList;
 @end

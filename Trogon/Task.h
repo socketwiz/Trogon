@@ -13,5 +13,6 @@
 }
 
 + (Task *)sharedTask;
-- (void)performTask:(NSString *)aTask arguments:(NSArray *)taskArguments;
+- (void)performTask:(NSString *)aTask withArguments:(NSArray *)taskArguments object:(NSObject *)anObject selector:(SEL)aSelector;
+- (void)readDataUsingArguments:(NSArray *)theArguments;
 @end

@@ -77,14 +77,12 @@
         }
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(readAvailableInterpreters:)
-                                                 name:NSFileHandleDataAvailableNotification 
-                                               object:nil];
-    
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list known", rvmPath];
-    [[Task sharedTask] performTask:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]];
+    [[Task sharedTask] performTask:@"/bin/sh" 
+                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
+                            object:self
+                          selector:@selector(readAvailableInterpreters:)];
     
     [NSApp beginSheet:objectSheet
        modalForWindow:[documentWindow window]
