@@ -9,6 +9,7 @@
 #import "ProgressSheetController.h"
 
 @implementation ProgressSheetController
+@synthesize progressWheel;
 @synthesize btnContinue;
 @synthesize textViewProgress;
 @synthesize lblProgress;
@@ -49,6 +50,8 @@
                                              selector:@selector(readInstallProgress:)
                                                  name:NSFileHandleDataAvailableNotification 
                                                object:nil];
+    [progressWheel setHidden:NO];
+    [progressWheel startAnimation:self];
 
     if ([self.action localizedCompare:@"install_ruby"] == NSOrderedSame) {
         [self.lblProgress setStringValue:@"Installing new Ruby"];
@@ -71,7 +74,10 @@
         [self.lblProgress setStringValue:@"Uninstalling Gem"];
     }
 
+    [self.textViewProgress setEditable:YES];
     [self.textViewProgress setString:@""];
+    [self.textViewProgress setEditable:NO];
+
     [self.btnContinue setEnabled:NO];
 
     [NSApp beginSheet:objectSheet
@@ -107,7 +113,9 @@
     text = [[NSString alloc] initWithData:data 
                                  encoding:NSASCIIStringEncoding];
     
+    [self.textViewProgress setEditable:YES];
     [self.textViewProgress insertText:text];
+    [self.textViewProgress setEditable:NO];
     
     if([data length]) {
         [[notification object] waitForDataInBackgroundAndNotify];
@@ -116,6 +124,9 @@
         [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                         name:NSFileHandleDataAvailableNotification 
                                                       object:nil];
+
+        [progressWheel stopAnimation:self];
+        [progressWheel setHidden:YES];
 
         if ([self.action localizedCompare:@"install_ruby"] == NSOrderedSame) {            
             [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 

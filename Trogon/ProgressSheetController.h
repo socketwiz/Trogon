@@ -17,6 +17,7 @@
     __weak NSTextField *lblProgress;
     __unsafe_unretained NSTextView *textViewProgress;
     __weak NSButton *btnContinue;
+    __weak NSProgressIndicator *progressWheel;
 }
 @property (nonatomic, retain) IBOutlet NSView *documentWindow;
 @property (nonatomic, retain) IBOutlet NSPanel *objectSheet;
@@ -30,4 +31,5 @@
 @property (weak) IBOutlet NSTextField *lblProgress;
 @property (unsafe_unretained) IBOutlet NSTextView *textViewProgress;
 @property (weak) IBOutlet NSButton *btnContinue;
+@property (weak) IBOutlet NSProgressIndicator *progressWheel;
 @end
