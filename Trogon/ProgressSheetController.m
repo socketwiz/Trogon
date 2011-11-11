@@ -50,12 +50,27 @@
                                                  name:NSFileHandleDataAvailableNotification 
                                                object:nil];
 
-    if ([self.action localizedCompare:@"install"] == NSOrderedSame) {
+    if ([self.action localizedCompare:@"install_ruby"] == NSOrderedSame) {
         [self.lblProgress setStringValue:@"Installing new Ruby"];
     }
-    if ([self.action localizedCompare:@"uninstall"] == NSOrderedSame) {
+    if ([self.action localizedCompare:@"uninstall_ruby"] == NSOrderedSame) {
         [self.lblProgress setStringValue:@"Uninstalling Ruby"];
     }
+    
+    if ([self.action localizedCompare:@"install_gemset"] == NSOrderedSame) {
+        [self.lblProgress setStringValue:@"Installing new Gemset"];
+    }
+    if ([self.action localizedCompare:@"uninstall_gemset"] == NSOrderedSame) {
+        [self.lblProgress setStringValue:@"Uninstalling Gemset"];
+    }
+    
+    if ([self.action localizedCompare:@"install_gem"] == NSOrderedSame) {
+        [self.lblProgress setStringValue:@"Installing new Gem"];
+    }
+    if ([self.action localizedCompare:@"uninstall_gem"] == NSOrderedSame) {
+        [self.lblProgress setStringValue:@"Uninstalling Gem"];
+    }
+
     [self.textViewProgress setString:@""];
     [self.btnContinue setEnabled:NO];
 
@@ -102,17 +117,44 @@
                                                         name:NSFileHandleDataAvailableNotification 
                                                       object:nil];
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 
-                                                            object:self
-                                                          userInfo:nil];
-
-        if ([self.action localizedCompare:@"install"] == NSOrderedSame) {
+        if ([self.action localizedCompare:@"install_ruby"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 
+                                                                object:self
+                                                              userInfo:nil];
             [self.lblProgress setStringValue:@"Ruby Installation Complete"];
         }
-        if ([self.action localizedCompare:@"uninstall"] == NSOrderedSame) {
+        if ([self.action localizedCompare:@"uninstall_ruby"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 
+                                                                object:self
+                                                              userInfo:nil];
             [self.lblProgress setStringValue:@"Ruby Uninstall Complete"];
         }
-
+        
+        if ([self.action localizedCompare:@"install_gemset"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshGemset" 
+                                                                object:self
+                                                              userInfo:nil];
+            [self.lblProgress setStringValue:@"Gemset Installation Complete"];
+        }
+        if ([self.action localizedCompare:@"uninstall_gemset"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshGemset" 
+                                                                object:self
+                                                              userInfo:nil];
+            [self.lblProgress setStringValue:@"Gemset Uninstall Complete"];
+        }
+        
+        if ([self.action localizedCompare:@"install_gem"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshGem" 
+                                                                object:self
+                                                              userInfo:nil];
+            [self.lblProgress setStringValue:@"Gem Installation Complete"];
+        }
+        if ([self.action localizedCompare:@"uninstall_gem"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshGem" 
+                                                                object:self
+                                                              userInfo:nil];
+            [self.lblProgress setStringValue:@"Gem Uninstall Complete"];
+        }
         [self.btnContinue setEnabled:YES];
     }
 }

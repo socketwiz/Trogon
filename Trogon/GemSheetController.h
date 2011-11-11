@@ -11,9 +11,11 @@
 @interface GemSheetController : NSObject {
     NSView *documentWindow;
     NSPanel *objectSheet;  
+    __weak NSTextField *txtGem;
 }
 @property (nonatomic, retain) IBOutlet NSView *documentWindow;
 @property (nonatomic, retain) IBOutlet NSPanel *objectSheet;
+@property (weak) IBOutlet NSTextField *txtGem;
 
 - (IBAction)add:(id)sender;
 - (IBAction)cancel:(id)sender;

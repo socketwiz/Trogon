@@ -3,7 +3,7 @@
 //  Trogon
 //
 //  Created by Ricky Nelson on 10/16/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 Lark Software. All rights reserved.
 //
 
 #import "AppDelegate.h"
@@ -25,6 +25,7 @@
 
 @synthesize aryRvmsController = _aryRvmsController;
 @synthesize aryGemSetsController = _aryGemSetsController;
+@synthesize aryGemsController = _aryGemsController;
 
 - (id)init {
     self = [super init];
@@ -39,6 +40,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addInterpretersNotification:)
                                                  name:@"TrogonAddRubyInterpreter" 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(addGemsetNotification:)
+                                                 name:@"TrogonAddGemset" 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(addGemNotification:)
+                                                 name:@"TrogonAddGem" 
                                                object:nil];
 
     return self;
@@ -55,7 +64,7 @@
                                                  name:@"TrogonRefreshRubyInterpreter" 
                                                object:nil];
     
-    [_sheetControllerProgress add:self action:@"install"];
+    [_sheetControllerProgress add:self action:@"install_ruby"];
 
     Rvm *rvm = [[notification userInfo] objectForKey:@"rvm"];
 
@@ -71,12 +80,67 @@
                        synchronous:YES];
 }
 
+- (void)addGemsetNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshGemsetsNotification:)
+                                                 name:@"TrogonRefreshGemset" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"install_gemset"];
+    
+    NSString *gemset = [[notification userInfo] objectForKey:@"gemset"];
+    
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset create %@", rvmPath, self.rvm.interpreter, gemset];
+    [[Task sharedTask] performTask:@"/bin/sh" 
+                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
+                            object:nil
+                          selector:nil
+                       synchronous:YES];
+}
+
+- (void)addGemNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshGemsNotification:)
+                                                 name:@"TrogonRefreshGem" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"install_gem"];
+    
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+    NSString *gem = [[notification userInfo] objectForKey:@"gem"];
+    
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem install %@", rvmPath, self.rvm.interpreter, gemset.name, gem];
+    [[Task sharedTask] performTask:@"/bin/sh" 
+                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
+                            object:nil
+                          selector:nil
+                       synchronous:YES];
+}
+
 - (void)refreshInterpretersNotification:(NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:@"TrogonRefreshRubyInterpreter" 
                                                   object:nil];
     
     [self reloadInterpreters];
+}
+
+- (void)refreshGemsetsNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:@"TrogonRefreshGemset" 
+                                                  object:nil];
+    
+    [self reloadGemsetList];
+}
+
+- (void)refreshGemsNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+                                                    name:@"TrogonRefreshGem" 
+                                                  object:nil];
+    
+    [self reloadGemList];
 }
 
 - (void)reloadInterpreters {
@@ -207,7 +271,7 @@
                                                  name:@"TrogonRefreshRubyInterpreter" 
                                                object:nil];
 
-    [_sheetControllerProgress add:self action:@"uninstall"];
+    [_sheetControllerProgress add:self action:@"uninstall_ruby"];
     
     Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
     
@@ -222,10 +286,42 @@
 }
 
 - (IBAction)btnRemoveGemset:(id)sender {
-    NSLog(@"btnRemoveGemset");
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshGemsetsNotification:)
+                                                 name:@"TrogonRefreshGemset" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"uninstall_gemset"];
+
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm --force gemset delete %@", rvmPath, self.rvm.interpreter, gemset.name];
+    (void)[[Task sharedTask] performTask:@"/bin/sh" 
+                           withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
+                                  object:nil
+                                selector:nil
+                             synchronous:YES];
 }
 
 - (IBAction)btnRemoveGem:(id)sender {
-    NSLog(@"btnRemoveGem");
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshGemsNotification:)
+                                                 name:@"TrogonRefreshGem" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"uninstall_gem"];
+    
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+    Gem *gem = [[self.aryGemsController selectedObjects] objectAtIndex:0];
+    
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem uninstall %@", rvmPath, self.rvm.interpreter, gemset.name, gem.nameWithoutVersion];
+    (void)[[Task sharedTask] performTask:@"/bin/sh" 
+                           withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
+                                  object:nil
+                                selector:nil
+                             synchronous:YES];
 }
+
 @end

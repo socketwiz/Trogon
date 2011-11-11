@@ -9,6 +9,7 @@
 #import "GemsetSheetController.h"
 
 @implementation GemsetSheetController
+@synthesize txtGemset;
 @synthesize documentWindow;
 @synthesize objectSheet;
 
@@ -50,9 +51,23 @@
               contextInfo:(void  *)contextInfo {
     
     if (returnCode == NSOKButton) {
+        NSString *gemset = [txtGemset stringValue];
+        NSDictionary *info = [NSDictionary dictionaryWithObject:gemset forKey:@"gemset"];
+        
+        // we need to cleanup _before_ we send the notification below to create a new sheet
+        // otherwise things get wonky because the new sheet will get created before this one
+        // is cleaned up, then when you dimsiss the new sheet, this one persists and you can't 
+        // get rid of it :(
+        [objectSheet orderOut:self];
+        
+        // send it to the AppDelegate so we can display a progress sheet
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonAddGemset" 
+                                                            object:self
+                                                          userInfo:info];        
     }
-    
-    [objectSheet orderOut:self];
+    else {
+        [objectSheet orderOut:self];
+    }
 }
 
 @end

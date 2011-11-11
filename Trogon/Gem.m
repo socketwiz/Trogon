@@ -10,5 +10,12 @@
 
 @implementation Gem
 @synthesize name = _name;
+@synthesize nameWithoutVersion = _nameWithoutVersion;
+
+- (NSString *)nameWithoutVersion {
+    NSArray *parts = [self.name componentsSeparatedByString:@" "];
+    
+    return [parts objectAtIndex:0];
+}
 
 @end

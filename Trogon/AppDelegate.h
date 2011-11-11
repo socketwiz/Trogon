@@ -3,7 +3,7 @@
 //  Trogon
 //
 //  Created by Ricky Nelson on 10/16/11.
-//  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2011 Lark Software. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>
@@ -24,6 +24,7 @@
     __weak NSTableView *_tblGem;
     __weak NSArrayController *_aryRvmsController;
     __weak NSArrayController *_aryGemSetsController;
+    __weak NSArrayController *_aryGemsController;
     __weak ProgressSheetController *_sheetControllerProgress;
 }
 
@@ -38,6 +39,7 @@
 @property (weak) IBOutlet NSTableView *tblGem;
 @property (weak) IBOutlet NSArrayController *aryRvmsController;
 @property (weak) IBOutlet NSArrayController *aryGemSetsController;
+@property (weak) IBOutlet NSArrayController *aryGemsController;
 
 @property (weak) IBOutlet ProgressSheetController *sheetControllerProgress;
 
