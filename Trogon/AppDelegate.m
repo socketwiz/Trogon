@@ -17,9 +17,6 @@
 @synthesize rvms = _rvms;
 @synthesize gemsets = _gemsets;
 @synthesize gems = _gems;
-@synthesize outputInterpreter = _outputInterpreter;
-@synthesize outputGemsetList = _outputGemsetList;
-@synthesize outputGemList = _outputGemList;
 @synthesize rvm = _rvm;
 
 @synthesize tblRvm = _tblRvm;
@@ -35,10 +32,6 @@
         _rvms = [[NSMutableArray alloc] init];
         _gemsets = [[NSMutableArray alloc] init];
         _gems = [[NSMutableArray alloc] init];
-        
-        _outputInterpreter = [[NSMutableString alloc] init];
-        _outputGemsetList = [[NSMutableString alloc] init];
-        _outputGemList = [[NSMutableString alloc] init];
         
         _rvm = [[Rvm alloc] init];
     }
@@ -98,10 +91,9 @@
 
 -(void)readInterpreterData: (NSString *)output {
     [self.rvms removeAllObjects];
-    [self.outputInterpreter appendString:output];
     
     // pull just the ruby interpreters out of the mess we get back
-    for (NSString *line in [self.outputInterpreter componentsSeparatedByString:@"\n"]) {
+    for (NSString *line in [output componentsSeparatedByString:@"\n"]) {
         // first line is always "rvm rubies" and we don't want it
         if ([line length] > 0 && [line localizedCompare:@"rvm rubies"] != NSOrderedSame) {
             Rvm *aRvm = [[Rvm alloc] init];
@@ -117,7 +109,6 @@
 
     // load the gemset list
     [self reloadGemsetList];
-    [self.outputInterpreter setString:@""];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
@@ -152,11 +143,10 @@
 
 - (void)readGemsetList: (NSString *)output {
     [self.gemsets removeAllObjects];
-    [self.outputGemsetList appendString:output];
     
     // pull just the ruby gemsets out of the mess we get back
     NSInteger cnt = 0;
-    for (NSString *line in [self.outputGemsetList componentsSeparatedByString:@"\n"]) {
+    for (NSString *line in [output componentsSeparatedByString:@"\n"]) {
         if (cnt < 2 || [line length] == 0) { // skip first two lines or empty lines
             cnt++;
             continue;
@@ -168,7 +158,6 @@
         self.gemsets = self.gemsets;
     }
     
-    [self.outputGemsetList setString:@""];
     [self reloadGemList];
 }
 
@@ -188,11 +177,10 @@
 
 -(void)readGemList: (NSString *)output {
     [self.gems removeAllObjects];
-    [self.outputGemList appendString:output];
     
     NSInteger gemCount = 0;
     // pull just the ruby gems out of the mess we get back
-    for (NSString *line in [self.outputGemList componentsSeparatedByString:@"\n"]) {
+    for (NSString *line in [output componentsSeparatedByString:@"\n"]) {
         if ([line length] == 0) { // skip empty lines
             continue;
         }
@@ -204,14 +192,13 @@
         gemCount++;
     }
 
-    if ([self.outputGemList length] == 1) {
+    if ([output length] == 1) {
         Gem *aGem = [[Gem alloc] init];
         aGem.name = @"No gems for this gemset";
         [self.gems addObject:aGem];
         self.gems = self.gems;
     }
 
-    [self.outputGemList setString:@""];
 }
 
 - (IBAction)btnRemoveInterpreter:(id)sender {

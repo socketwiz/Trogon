@@ -16,9 +16,6 @@
     NSMutableArray *_rvms;
     NSMutableArray *_gemsets;
     NSMutableArray *_gems;
-    NSMutableString *_outputInterpreter;
-    NSMutableString *_outputGemsetList;
-    NSMutableString *_outputGemList;
     
     Rvm *_rvm;
     
@@ -34,9 +31,6 @@
 @property (retain, readwrite) NSMutableArray *rvms;
 @property (retain, readwrite) NSMutableArray *gemsets;
 @property (retain, readwrite) NSMutableArray *gems;
-@property (retain, readwrite) NSMutableString *outputInterpreter;
-@property (retain, readwrite) NSMutableString *outputGemsetList;
-@property (retain, readwrite) NSMutableString *outputGemList;
 @property (retain, readwrite) Rvm *rvm;
 
 @property (weak) IBOutlet NSTableView *tblRvm;
