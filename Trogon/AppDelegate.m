@@ -57,6 +57,11 @@
 }
 
 - (void)addInterpretersNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshInterpretersNotification:)
+                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                               object:nil];
+    
     [_sheetControllerProgress add:self action:@"install"];
 
     Rvm *rvm = [[notification userInfo] objectForKey:@"rvm"];
@@ -68,15 +73,16 @@
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm install %@", rvmPath, interpreter];
     [[Task sharedTask] performTask:@"/bin/sh" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
-                            object:self
-                          selector:@selector(refreshInterpretersNotification:)];
+                            object:nil
+                          selector:nil
+                       synchronous:YES];
 }
 
-- (void)refreshInterpretersNotification:(NSString *)output {
+- (void)refreshInterpretersNotification:(NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self 
                                                     name:@"TrogonRefreshRubyInterpreter" 
                                                   object:nil];
-
+    
     [self reloadInterpreters];
 }
 
@@ -86,7 +92,8 @@
     [[Task sharedTask] performTask:@"/bin/sh" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                             object:self
-                          selector:@selector(readInterpreterData:)];
+                          selector:@selector(readInterpreterData:)
+                       synchronous:NO];
 }
 
 -(void)readInterpreterData: (NSString *)output {
@@ -139,7 +146,8 @@
     [[Task sharedTask] performTask:@"/bin/sh" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                             object:self
-                          selector:@selector(readGemsetList:)];
+                          selector:@selector(readGemsetList:)
+                       synchronous:NO];
 }
 
 - (void)readGemsetList: (NSString *)output {
@@ -174,7 +182,8 @@
     [[Task sharedTask] performTask:@"/bin/sh" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                             object:self
-                          selector:@selector(readGemList:)];
+                          selector:@selector(readGemList:)
+                       synchronous:NO];
 }
 
 -(void)readGemList: (NSString *)output {
@@ -206,6 +215,11 @@
 }
 
 - (IBAction)btnRemoveInterpreter:(id)sender {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshInterpretersNotification:)
+                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                               object:nil];
+
     [_sheetControllerProgress add:self action:@"uninstall"];
     
     Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
@@ -215,8 +229,9 @@
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm remove %@ --archive", rvmPath, interpreter];
     (void)[[Task sharedTask] performTask:@"/bin/sh" 
                            withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                                  object:self
-                                selector:@selector(refreshInterpretersNotification:)];
+                                  object:nil
+                                selector:nil
+                             synchronous:YES];
 }
 
 - (IBAction)btnRemoveGemset:(id)sender {

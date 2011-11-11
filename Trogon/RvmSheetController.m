@@ -18,35 +18,17 @@
 @synthesize outputInterpreter = _outputInterpreter;
 
 
--(void)readAvailableInterpreters: (NSNotification *)notification {
-    NSData *data;
-    NSString *text;
+-(void)readAvailableInterpreters: (NSString *)output {
+    [self.outputInterpreter appendString:output];
     
-    data = [[notification object] availableData];
-    text = [[NSString alloc] initWithData:data 
-                                 encoding:NSASCIIStringEncoding];
-
-    [self.outputInterpreter appendString:text];
-    
-    if([data length]) {
-        // pull just the ruby interpreters out of the mess we get back
-        for (NSString *line in [self.outputInterpreter componentsSeparatedByString:@"\n"]) {
-            if ([line length] > 0 && ![line hasPrefix:@"#"]) {
-                Rvm *aRvm = [[Rvm alloc] init];
-                aRvm.interpreter = line;
-                [_interpreters addObject:aRvm];
-                self.interpreters = _interpreters;
-            }
+    // pull just the ruby interpreters out of the mess we get back
+    for (NSString *line in [self.outputInterpreter componentsSeparatedByString:@"\n"]) {
+        if ([line length] > 0 && ![line hasPrefix:@"#"]) {
+            Rvm *aRvm = [[Rvm alloc] init];
+            aRvm.interpreter = line;
+            [_interpreters addObject:aRvm];
+            self.interpreters = _interpreters;
         }
-        
-        [[notification object] waitForDataInBackgroundAndNotify];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                        name:NSFileHandleDataAvailableNotification 
-                                                      object:nil];
-        
-        [self.outputInterpreter setString:@""];
     }
 }
 
@@ -82,7 +64,8 @@
     [[Task sharedTask] performTask:@"/bin/sh" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
                             object:self
-                          selector:@selector(readAvailableInterpreters:)];
+                          selector:@selector(readAvailableInterpreters:)
+                       synchronous:NO];
     
     [NSApp beginSheet:objectSheet
        modalForWindow:[documentWindow window]

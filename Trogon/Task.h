@@ -13,6 +13,10 @@
 }
 
 + (Task *)sharedTask;
-- (void)performTask:(NSString *)aTask withArguments:(NSArray *)taskArguments object:(NSObject *)anObject selector:(SEL)aSelector;
+- (void)performTask:(NSString *)aTask 
+      withArguments:(NSArray *)taskArguments 
+             object:(NSObject *)anObject 
+           selector:(SEL)aSelector 
+        synchronous:(BOOL)isSynchronous;
 - (void)readDataUsingArguments:(NSArray *)theArguments;
 @end

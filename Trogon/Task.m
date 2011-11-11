@@ -39,13 +39,18 @@ static Task* _sharedTask = nil;
 - (void)performTask:(NSString *)aTask 
       withArguments:(NSArray *)taskArguments 
              object:(NSObject *)anObject 
-           selector:(SEL)aSelector {
+           selector:(SEL)aSelector 
+        synchronous:(BOOL)isSynchronous {
     NSTask *_task   = [[NSTask alloc] init];
     NSPipe *input   = [NSPipe pipe];
     NSPipe *output  = [NSPipe pipe];
     NSFileHandle *_fileHandle;
     
     _fileHandle = [output fileHandleForReading];
+    
+    if (isSynchronous == YES) {
+        [_fileHandle waitForDataInBackgroundAndNotify];
+    }
     
     [_task setLaunchPath:aTask];
     [_task setStandardInput:input]; // Cocoa bug, won't exit without this
@@ -55,14 +60,16 @@ static Task* _sharedTask = nil;
     [_task setArguments:taskArguments];
     [_task launch];
 
-    NSMutableDictionary *arguments = [[NSMutableDictionary alloc] init];
-    
-    [arguments setValue:_fileHandle forKey:@"file_handle"];
-    [arguments setValue:anObject forKey:@"object"];
-    [arguments setValue:NSStringFromSelector(aSelector) forKey:@"selector"];
-    
-    //read the data off in a background thread, then pass the text onto to the appropriate selector
-    [self performSelectorInBackground:@selector(readDataUsingArguments:) withObject:arguments];
+    if (isSynchronous == NO) {
+        NSMutableDictionary *arguments = [[NSMutableDictionary alloc] init];
+        
+        [arguments setValue:_fileHandle forKey:@"file_handle"];
+        [arguments setValue:anObject forKey:@"object"];
+        [arguments setValue:NSStringFromSelector(aSelector) forKey:@"selector"];
+        
+        //read the data off in a background thread, then pass the text onto to the appropriate selector
+        [self performSelectorInBackground:@selector(readDataUsingArguments:) withObject:arguments];
+    }
 }
 
 - (void)readDataUsingArguments:(NSDictionary *)theArguments {
