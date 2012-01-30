@@ -21,6 +21,7 @@
 		6451A390144B2E74003CCFC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6451A38E144B2E74003CCFC9 /* InfoPlist.strings */; };
 		6451A393144B2E74003CCFC9 /* TrogonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A392144B2E74003CCFC9 /* TrogonTests.m */; };
 		6451A39E144B2F01003CCFC9 /* Rvm.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A39D144B2F01003CCFC9 /* Rvm.m */; };
+		64745954147202820004698B /* GemsetTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 64745953147202820004698B /* GemsetTableView.m */; };
 		647F9F6D144BBD81005F13C1 /* GemsetSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 647F9F6C144BBD81005F13C1 /* GemsetSheet.xib */; };
 		647F9F6F144BBD8E005F13C1 /* GemSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 647F9F6E144BBD8E005F13C1 /* GemSheet.xib */; };
 		647F9F72144BBF88005F13C1 /* GemsetSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 647F9F71144BBF88005F13C1 /* GemsetSheetController.m */; };
@@ -73,6 +74,8 @@
 		6451A392144B2E74003CCFC9 /* TrogonTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrogonTests.m; sourceTree = "<group>"; };
 		6451A39C144B2F01003CCFC9 /* Rvm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Rvm.h; sourceTree = "<group>"; };
 		6451A39D144B2F01003CCFC9 /* Rvm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Rvm.m; sourceTree = "<group>"; };
+		64745952147202820004698B /* GemsetTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GemsetTableView.h; sourceTree = "<group>"; };
+		64745953147202820004698B /* GemsetTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GemsetTableView.m; sourceTree = "<group>"; };
 		647F9F6C144BBD81005F13C1 /* GemsetSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GemsetSheet.xib; sourceTree = "<group>"; };
 		647F9F6E144BBD8E005F13C1 /* GemSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GemSheet.xib; sourceTree = "<group>"; };
 		647F9F70144BBF88005F13C1 /* GemsetSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GemsetSheetController.h; sourceTree = "<group>"; };
@@ -161,6 +164,8 @@
 			children = (
 				6451A37A144B2E74003CCFC9 /* AppDelegate.h */,
 				6451A37B144B2E74003CCFC9 /* AppDelegate.m */,
+				64ADE002144BB1940099E47A /* BackgroundView.h */,
+				64ADE003144BB1940099E47A /* BackgroundView.m */,
 				64ADDFEF144B8E1F0099E47A /* Gem.h */,
 				64ADDFF0144B8E1F0099E47A /* Gem.m */,
 				647F9F6E144BBD8E005F13C1 /* GemSheet.xib */,
@@ -171,9 +176,9 @@
 				647F9F6C144BBD81005F13C1 /* GemsetSheet.xib */,
 				647F9F70144BBF88005F13C1 /* GemsetSheetController.h */,
 				647F9F71144BBF88005F13C1 /* GemsetSheetController.m */,
+				64745952147202820004698B /* GemsetTableView.h */,
+				64745953147202820004698B /* GemsetTableView.m */,
 				6451A37D144B2E74003CCFC9 /* MainMenu.xib */,
-				64ADE002144BB1940099E47A /* BackgroundView.h */,
-				64ADE003144BB1940099E47A /* BackgroundView.m */,
 				64ADDFFC144B98080099E47A /* NSString+trimLeadingWhitespace.h */,
 				64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */,
 				64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */,
@@ -353,6 +358,7 @@
 				64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */,
 				64E790F2144E589C00741803 /* Task.m in Sources */,
 				64E79101144E5F8200741803 /* ProgressSheetController.m in Sources */,
+				64745954147202820004698B /* GemsetTableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
