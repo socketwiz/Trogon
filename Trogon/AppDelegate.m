@@ -164,7 +164,12 @@
             NSArray *interpreters = [[line stringByTrimmingLeadingWhitespace] componentsSeparatedByString:@" "];
             
             if ([interpreters count] > 1) {
-                aRvm.interpreter = [interpreters objectAtIndex:0];
+                if ([[interpreters objectAtIndex:0] localizedCompare:@"=>"] == NSOrderedSame) {
+                    aRvm.interpreter = [interpreters objectAtIndex:1];
+                }
+                else {
+                    aRvm.interpreter = [interpreters objectAtIndex:0];
+                }
                 [self.rvms addObject:aRvm];
                 self.rvms = self.rvms;
             }
