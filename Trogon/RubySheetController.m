@@ -44,14 +44,14 @@
 - (IBAction)add:(id)sender {
     if (objectSheet == nil) {
         NSBundle *myBundle = [NSBundle bundleForClass:[self class]];
-        NSNib *nib = [[NSNib alloc] initWithNibNamed:@"RvmSheet" bundle:myBundle];
+        NSNib *nib = [[NSNib alloc] initWithNibNamed:@"RubySheet" bundle:myBundle];
         
         BOOL success = [nib instantiateNibWithOwner:self topLevelObjects:nil];
         if (success != YES) {
             NSError *error;
             NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-            [errorDetail setValue:@"Unable to load RvmSheet.xib" forKey:NSLocalizedDescriptionKey];
-            error = [NSError errorWithDomain:@"TrogonRvmSheetDomainError" code:100 userInfo:errorDetail];
+            [errorDetail setValue:@"Unable to load RubySheet.xib" forKey:NSLocalizedDescriptionKey];
+            error = [NSError errorWithDomain:@"TrogonRubySheetDomainError" code:100 userInfo:errorDetail];
             [NSApp presentError:error];
             NSLog(@"%@", [errorDetail valueForKey:NSLocalizedDescriptionKey]);
 
