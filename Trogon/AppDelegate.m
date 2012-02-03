@@ -13,6 +13,7 @@
 
 @implementation AppDelegate
 @synthesize sheetControllerProgress = _sheetControllerProgress;
+@synthesize sheetControllerRvm = _sheetControllerRvm;
 @synthesize window = _window;
 @synthesize rvms = _rvms;
 @synthesize gemsets = _gemsets;
@@ -155,6 +156,7 @@
     }
     else {
         NSLog(@"RVM not installed");
+        [_sheetControllerRvm add:self];
     }
 }
 
@@ -335,6 +337,16 @@
 }
 
 - (IBAction)toolbarBtnLaunchTerminal:(id)sender {
+    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+        //TODO: replace with fancier alert
+        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
+                                         defaultButton:@"OK" 
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Please select a ruby from the list"];
+        [alert runModal];
+        return;
+    }
     Ruby *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
     
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
@@ -359,6 +371,17 @@
 }
 
 - (IBAction)toolbarBtnCreateRvmrc:(id)sender {
+    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+        //TODO: replace with fancier alert
+        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
+                                         defaultButton:@"OK" 
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Please select a ruby from the list"];
+        [alert runModal];
+        return;
+    }
+
     NSOpenPanel * oPanel = [NSOpenPanel openPanel];
     
     [oPanel setCanChooseFiles:NO];
@@ -396,6 +419,7 @@
 }
 
 - (void)rvmrcInstalled:(NSURL *)pathToFile {
+    //TODO: replace with fancier alert
     NSAlert *alert = [NSAlert alertWithMessageText:@"SUCCESS" 
                                      defaultButton:@"OK" 
                                    alternateButton:nil

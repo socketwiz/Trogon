@@ -11,6 +11,7 @@
 #import "GemSet.h"
 #import "Gem.h"
 #import "ProgressSheetController.h"
+#import "RvmSheetController.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     NSMutableArray *_rvms;
@@ -42,6 +43,7 @@
 @property (weak) IBOutlet NSArrayController *aryGemsController;
 
 @property (weak) IBOutlet ProgressSheetController *sheetControllerProgress;
+@property (weak) IBOutlet RvmSheetController *sheetControllerRvm;
 
 - (IBAction)btnRemoveInterpreter:(id)sender;
 - (IBAction)btnRemoveGemset:(id)sender;
