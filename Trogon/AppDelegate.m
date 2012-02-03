@@ -145,12 +145,17 @@
 
 - (void)reloadInterpreters {
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list", rvmPath];
-    [[Task sharedTask] performTask:@"/bin/sh" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                            object:self
-                          selector:@selector(readInterpreterData:)
-                       synchronous:NO];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:rvmPath]) {
+        NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list", rvmPath];
+        [[Task sharedTask] performTask:@"/bin/sh" 
+                         withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
+                                object:self
+                              selector:@selector(readInterpreterData:)
+                           synchronous:NO];
+    }
+    else {
+        NSLog(@"RVM not installed");
+    }
 }
 
 -(void)readInterpreterData: (NSString *)output {
@@ -327,6 +332,76 @@
                                   object:nil
                                 selector:nil
                              synchronous:YES];
+}
+
+- (IBAction)toolbarBtnLaunchTerminal:(id)sender {
+    Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    
+    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to do script \"source %@ && rvm %@\" activate", rvmPath, interpreter];
+    NSDictionary *errorInfo;
+
+    NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];
+    [scriptObject executeAndReturnError:&errorInfo];
+    
+    if (errorInfo) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        NSString *errorFromAppleScript = [NSString stringWithFormat:@"AppleScript Error: %@", [errorInfo valueForKey:@"NSAppleScriptErrorMessage"]];
+        [errorDetail setValue:errorFromAppleScript forKey:NSLocalizedDescriptionKey];
+        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+        
+        NSLog(@"AppleScript Command: %@", rvmCmd);
+        NSLog(@"%@", errorFromAppleScript);
+        
+        [NSApp presentError:error];
+    }
+}
+
+- (IBAction)toolbarBtnCreateRvmrc:(id)sender {
+    NSOpenPanel * oPanel = [NSOpenPanel openPanel];
+    
+    [oPanel setCanChooseFiles:NO];
+    [oPanel setCanChooseDirectories:YES];
+    [oPanel setAllowsMultipleSelection:NO];
+    [oPanel setDirectoryURL:[NSURL URLWithString:NSHomeDirectory()]];
+
+    [oPanel beginSheetModalForWindow:[self window] completionHandler:^(NSInteger returnCode)
+    {
+        NSURL *pathToFile = nil;
+
+        if (returnCode == NSOKButton) {
+            pathToFile = [[oPanel URLs] objectAtIndex:0];
+
+            Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+            NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
+            
+            GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+            
+            NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+            NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && cd %@ && rvm --rvmrc --create %@@%@", rvmPath, [pathToFile path], interpreter, gemset.name];
+            (void)[[Task sharedTask] performTask:@"/bin/sh" 
+                                   withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
+                                          object:nil
+                                        selector:nil
+                                     synchronous:YES];
+
+            [self performSelectorOnMainThread:@selector(rvmrcInstalled:)
+                                   withObject:pathToFile 
+                                waitUntilDone:NO];
+
+
+        }        
+    }];
+}
+
+- (void)rvmrcInstalled:(NSURL *)pathToFile {
+    NSAlert *alert = [NSAlert alertWithMessageText:@"SUCCESS" 
+                                     defaultButton:@"OK" 
+                                   alternateButton:nil
+                                       otherButton:nil
+                         informativeTextWithFormat:@".rvmrc was created at: %@", [pathToFile path]];
+    [alert runModal];
 }
 
 @end

@@ -47,7 +47,12 @@
 - (IBAction)btnRemoveGemset:(id)sender;
 - (IBAction)btnRemoveGem:(id)sender;
 
+- (IBAction)toolbarBtnLaunchTerminal:(id)sender;
+- (IBAction)toolbarBtnCreateRvmrc:(id)sender;
+
 - (void)reloadInterpreters;
 - (void)reloadGemsetList;
 - (void)reloadGemList;
+
+- (void)rvmrcInstalled:(NSURL *)pathToFile;
 @end
