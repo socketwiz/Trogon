@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "Rvm.h"
+#import "Ruby.h"
 #import "GemSet.h"
 #import "Gem.h"
 #import "ProgressSheetController.h"
@@ -17,7 +17,7 @@
     NSMutableArray *_gemsets;
     NSMutableArray *_gems;
     
-    Rvm *_rvm;
+    Ruby *_ruby;
     
     __weak NSTableView *_tblRvm;
     __weak NSTableView *_tblGemset;
@@ -32,7 +32,7 @@
 @property (retain, readwrite) NSMutableArray *rvms;
 @property (retain, readwrite) NSMutableArray *gemsets;
 @property (retain, readwrite) NSMutableArray *gems;
-@property (retain, readwrite) Rvm *rvm;
+@property (retain, readwrite) Ruby *ruby;
 
 @property (weak) IBOutlet NSTableView *tblRvm;
 @property (weak) IBOutlet NSTableView *tblGemset;

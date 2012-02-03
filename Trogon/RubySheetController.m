@@ -1,16 +1,16 @@
 //
-//  RvmSheetController.m
+//  RubySheetController.m
 //  Trogon
 //
 //  Created by Ricky Nelson on 10/16/11.
 //  Copyright (c) 2011 Lark Software. All rights reserved.
 //
 
-#import "RvmSheetController.h"
+#import "RubySheetController.h"
 #import "NSString+trimTrailingWhitespace.h"
 #import "Task.h"
 
-@implementation RvmSheetController
+@implementation RubySheetController
 @synthesize aryRvmsController;
 @synthesize documentWindow;
 @synthesize objectSheet;
@@ -24,7 +24,7 @@
     // pull just the ruby interpreters out of the mess we get back
     for (NSString *line in [self.outputInterpreter componentsSeparatedByString:@"\n"]) {
         if ([line length] > 0 && ![line hasPrefix:@"#"]) {
-            Rvm *aRvm = [[Rvm alloc] init];
+            Ruby *aRvm = [[Ruby alloc] init];
             aRvm.interpreter = line;
             [_interpreters addObject:aRvm];
             self.interpreters = _interpreters;
@@ -87,8 +87,8 @@
               contextInfo:(void  *)contextInfo {
     
     if (returnCode == NSOKButton) {
-        Rvm *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
-        NSDictionary *info = [NSDictionary dictionaryWithObject:rvm forKey:@"rvm"];
+        Ruby *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+        NSDictionary *info = [NSDictionary dictionaryWithObject:rvm forKey:@"ruby"];
         
         // we need to cleanup _before_ we send the notification below to create a new sheet
         // otherwise things get wonky because the new sheet will get created before this one

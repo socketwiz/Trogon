@@ -1,5 +1,5 @@
 //
-//  Rvm.h
+//  Ruby.h
 //  Trogon
 //
 //  Created by Ricky Nelson on 10/16/11.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Rvm : NSObject {
+@interface Ruby : NSObject {
     NSString *_interpreter;
 }
 @property (retain,readwrite) NSString *interpreter;

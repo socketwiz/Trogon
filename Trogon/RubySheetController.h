@@ -1,5 +1,5 @@
 //
-//  RvmSheetController.h
+//  RubySheetController.h
 //  Trogon
 //
 //  Created by Ricky Nelson on 10/16/11.
@@ -7,9 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Rvm.h"
+#import "Ruby.h"
 
-@interface RvmSheetController : NSObject {
+@interface RubySheetController : NSObject {
     NSView *documentWindow;
     NSPanel *objectSheet;
     NSMutableString *_outputInterpreter;
