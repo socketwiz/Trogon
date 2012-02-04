@@ -58,17 +58,25 @@ static Task* _sharedTask = nil;
     [_task setStandardError:output];
 
     [_task setArguments:taskArguments];
-    [_task launch];
-
-    if (isSynchronous == NO) {
-        NSMutableDictionary *arguments = [[NSMutableDictionary alloc] init];
-        
-        [arguments setValue:_fileHandle forKey:@"file_handle"];
-        [arguments setValue:anObject forKey:@"object"];
-        [arguments setValue:NSStringFromSelector(aSelector) forKey:@"selector"];
-        
-        //read the data off in a background thread, then pass the text onto to the appropriate selector
-        [self performSelectorInBackground:@selector(readDataUsingArguments:) withObject:arguments];
+    
+    @try {
+        [_task launch];
+    }
+    @catch (NSException *exception) {
+        //TODO: handle error better, maybe an nsnotification back to appdelegate and post a pretty error
+        NSLog(@"ERROR: %@", [exception reason]);
+    }
+    @finally {
+        if (isSynchronous == NO) {
+            NSMutableDictionary *arguments = [[NSMutableDictionary alloc] init];
+            
+            [arguments setValue:_fileHandle forKey:@"file_handle"];
+            [arguments setValue:anObject forKey:@"object"];
+            [arguments setValue:NSStringFromSelector(aSelector) forKey:@"selector"];
+            
+            //read the data off in a background thread, then pass the text onto to the appropriate selector
+            [self performSelectorInBackground:@selector(readDataUsingArguments:) withObject:arguments];
+        }
     }
 }
 

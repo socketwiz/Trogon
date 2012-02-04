@@ -50,6 +50,10 @@
                                              selector:@selector(addGemNotification:)
                                                  name:@"TrogonAddGem" 
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(addRvmNotification:)
+                                                 name:@"TrogonAddRvm" 
+                                               object:nil];
 
     return self;
 }
@@ -115,6 +119,25 @@
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem install %@", rvmPath, self.ruby.interpreter, gemset.name, gem];
     [[Task sharedTask] performTask:@"/bin/sh" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
+                            object:nil
+                          selector:nil
+                       synchronous:YES];
+}
+
+- (void)addRvmNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshGemsNotification:)
+                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"install_rvm"];
+
+    NSError *error;
+    NSURL *rvmScriptAddress = [NSURL URLWithString:@"https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer"];
+    NSString *rvmScript = [NSString stringWithContentsOfURL:rvmScriptAddress encoding:NSUTF8StringEncoding error:&error];
+    NSString *rvmCmd = [NSString stringWithFormat:@"stable < <(%@)", rvmScript];
+    [[Task sharedTask] performTask:@"/bin/bash" 
+                     withArguments:[NSArray arrayWithObjects:@"-s", rvmCmd, nil] 
                             object:nil
                           selector:nil
                        synchronous:YES];

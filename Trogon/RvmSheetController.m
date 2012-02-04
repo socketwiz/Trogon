@@ -9,11 +9,6 @@
 #import "RvmSheetController.h"
 
 @implementation RvmSheetController
-@synthesize lblPathToRvm;
-@synthesize rdoRvmChoice;
-@synthesize txtRvmPath;
-@synthesize btnLocate;
-@synthesize btnInstall;
 @synthesize objectSheet;
 @synthesize documentWindow;
 
@@ -35,11 +30,7 @@
             return;
         }
     }
-    
-    [lblPathToRvm setHidden:YES];
-    [txtRvmPath setHidden:YES];
-    [btnLocate setHidden:YES];
-    
+
     [NSApp beginSheet:objectSheet
        modalForWindow:[documentWindow window]
         modalDelegate:self
@@ -60,6 +51,16 @@
               contextInfo:(void  *)contextInfo {
     
     if (returnCode == NSOKButton) {
+        // we need to cleanup _before_ we send the notification below to create a new sheet
+        // otherwise things get wonky because the new sheet will get created before this one
+        // is cleaned up, then when you dimsiss the new sheet, this one persists and you can't 
+        // get rid of it :(
+        [objectSheet orderOut:self];
+        
+        // send it to the AppDelegate so we can display a progress sheet
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonAddRvm" 
+                                                            object:self
+                                                          userInfo:nil];
     }
     else {
         [objectSheet orderOut:self];

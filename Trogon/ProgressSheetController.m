@@ -74,6 +74,10 @@
         [self.lblProgress setStringValue:@"Uninstalling Gem"];
     }
 
+    if ([self.action localizedCompare:@"install_rvm"] == NSOrderedSame) {
+        [self.lblProgress setStringValue:@"Installing RVM"];
+    }
+
     [self.textViewProgress setEditable:YES];
     [self.textViewProgress setString:@""];
     [self.textViewProgress setEditable:NO];
@@ -165,6 +169,13 @@
                                                                 object:self
                                                               userInfo:nil];
             [self.lblProgress setStringValue:@"Gem Uninstall Complete"];
+        }
+
+        if ([self.action localizedCompare:@"install_rvm"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 
+                                                                object:self
+                                                              userInfo:nil];
+            [self.lblProgress setStringValue:@"RVM Installation Complete"];
         }
         [self.btnContinue setEnabled:YES];
     }
