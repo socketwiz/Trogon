@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		64072FAB14DD784300B78DD8 /* terminal.icns in Resources */ = {isa = PBXBuildFile; fileRef = 64072FAA14DD784300B78DD8 /* terminal.icns */; };
+		64072FAE14DDA2E900B78DD8 /* trogon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 64072FAD14DDA2E900B78DD8 /* trogon.icns */; };
+		64072FB014DDBD1600B78DD8 /* rvmrc.icns in Resources */ = {isa = PBXBuildFile; fileRef = 64072FAF14DDBD1600B78DD8 /* rvmrc.icns */; };
 		64170249144BBC8200F7B1F7 /* RubySheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64170248144BBC8200F7B1F7 /* RubySheetController.m */; };
 		64170250144BBC9B00F7B1F7 /* GemSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6417024F144BBC9B00F7B1F7 /* GemSheetController.m */; };
 		64170252144BBD3300F7B1F7 /* RubySheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64170251144BBD3300F7B1F7 /* RubySheet.xib */; };
@@ -35,8 +38,6 @@
 		64E790F2144E589C00741803 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E790F1144E589C00741803 /* Task.m */; };
 		64E790FD144E5F7000741803 /* ProgressSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64E790FC144E5F7000741803 /* ProgressSheet.xib */; };
 		64E79101144E5F8200741803 /* ProgressSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E79100144E5F8200741803 /* ProgressSheetController.m */; };
-		64E79104144E617600741803 /* check.png in Resources */ = {isa = PBXBuildFile; fileRef = 64E79102144E617500741803 /* check.png */; };
-		64E79105144E617600741803 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = 64E79103144E617500741803 /* error.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		64072FAA14DD784300B78DD8 /* terminal.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = terminal.icns; sourceTree = "<group>"; };
+		64072FAD14DDA2E900B78DD8 /* trogon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trogon.icns; sourceTree = "<group>"; };
+		64072FAF14DDBD1600B78DD8 /* rvmrc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = rvmrc.icns; sourceTree = "<group>"; };
 		64170247144BBC8200F7B1F7 /* RubySheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubySheetController.h; sourceTree = "<group>"; };
 		64170248144BBC8200F7B1F7 /* RubySheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubySheetController.m; sourceTree = "<group>"; };
 		6417024E144BBC9B00F7B1F7 /* GemSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GemSheetController.h; sourceTree = "<group>"; };
@@ -100,8 +104,6 @@
 		64E790FC144E5F7000741803 /* ProgressSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressSheet.xib; sourceTree = "<group>"; };
 		64E790FF144E5F8200741803 /* ProgressSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressSheetController.h; sourceTree = "<group>"; };
 		64E79100144E5F8200741803 /* ProgressSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressSheetController.m; sourceTree = "<group>"; };
-		64E79102144E617500741803 /* check.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = check.png; sourceTree = "<group>"; };
-		64E79103144E617500741803 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 		6451A359144B2E74003CCFC9 = {
 			isa = PBXGroup;
 			children = (
+				64072FAD14DDA2E900B78DD8 /* trogon.icns */,
 				6451A36E144B2E74003CCFC9 /* Trogon */,
 				6451A38B144B2E74003CCFC9 /* TrogonTests */,
 				6451A367144B2E74003CCFC9 /* Frameworks */,
@@ -209,8 +212,8 @@
 		6451A36F144B2E74003CCFC9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				64E79102144E617500741803 /* check.png */,
-				64E79103144E617500741803 /* error.png */,
+				64072FAF14DDBD1600B78DD8 /* rvmrc.icns */,
+				64072FAA14DD784300B78DD8 /* terminal.icns */,
 				6451A370144B2E74003CCFC9 /* Trogon-Info.plist */,
 				6451A371144B2E74003CCFC9 /* InfoPlist.strings */,
 				6451A374144B2E74003CCFC9 /* main.m */,
@@ -317,9 +320,10 @@
 				647F9F6D144BBD81005F13C1 /* GemsetSheet.xib in Resources */,
 				647F9F6F144BBD8E005F13C1 /* GemSheet.xib in Resources */,
 				64E790FD144E5F7000741803 /* ProgressSheet.xib in Resources */,
-				64E79104144E617600741803 /* check.png in Resources */,
-				64E79105144E617600741803 /* error.png in Resources */,
 				64B3176014DB7BA800350DC3 /* RvmSheet.xib in Resources */,
+				64072FAB14DD784300B78DD8 /* terminal.icns in Resources */,
+				64072FAE14DDA2E900B78DD8 /* trogon.icns in Resources */,
+				64072FB014DDBD1600B78DD8 /* rvmrc.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
