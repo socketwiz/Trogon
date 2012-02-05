@@ -13,7 +13,6 @@
 @synthesize btnContinue;
 @synthesize textViewProgress;
 @synthesize lblProgress;
-@synthesize imgProgress;
 @synthesize documentWindow;
 @synthesize objectSheet;
 @synthesize action = _action;
@@ -76,6 +75,10 @@
 
     if ([self.action localizedCompare:@"install_rvm"] == NSOrderedSame) {
         [self.lblProgress setStringValue:@"Installing RVM"];
+    }
+    
+    if ([self.action localizedCompare:@"install_ruby_doc"] == NSOrderedSame) {
+        [self.lblProgress setStringValue:@"Installing Ruby Docs"];
     }
 
     [self.textViewProgress setEditable:YES];
@@ -176,6 +179,13 @@
                                                                 object:self
                                                               userInfo:nil];
             [self.lblProgress setStringValue:@"RVM Installation Complete"];
+        }
+        
+        if ([self.action localizedCompare:@"install_ruby_doc"] == NSOrderedSame) {            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonLaunchRdocBrowser" 
+                                                                object:self
+                                                              userInfo:nil];
+            [self.lblProgress setStringValue:@"Ruby Docs Installation Complete"];
         }
         [self.btnContinue setEnabled:YES];
     }

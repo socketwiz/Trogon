@@ -13,7 +13,6 @@
     NSPanel *objectSheet;
     NSMutableString *_action;
 
-    __weak NSImageView *imgProgress;
     __weak NSTextField *lblProgress;
     __unsafe_unretained NSTextView *textViewProgress;
     __weak NSButton *btnContinue;
@@ -27,7 +26,6 @@
 - (IBAction)cancel:(id)sender;
 - (IBAction)complete:(id)sender;
 
-@property (weak) IBOutlet NSImageView *imgProgress;
 @property (weak) IBOutlet NSTextField *lblProgress;
 @property (unsafe_unretained) IBOutlet NSTextView *textViewProgress;
 @property (weak) IBOutlet NSButton *btnContinue;
