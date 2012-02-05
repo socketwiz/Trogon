@@ -12,6 +12,10 @@
 #import "Gem.h"
 #import "ProgressSheetController.h"
 #import "RvmSheetController.h"
+#import "RubyDocSheetController.h"
+#import "GemServerSheetController.h"
+#import "GemServer.h"
+
 
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     NSMutableArray *_rvms;
@@ -19,6 +23,7 @@
     NSMutableArray *_gems;
     
     Ruby *_ruby;
+    GemServer *_gemServer;
     
     __weak NSTableView *_tblRvm;
     __weak NSTableView *_tblGemset;
@@ -44,6 +49,8 @@
 
 @property (weak) IBOutlet ProgressSheetController *sheetControllerProgress;
 @property (weak) IBOutlet RvmSheetController *sheetControllerRvm;
+@property (weak) IBOutlet RubyDocSheetController *sheetControllerRubyDoc;
+@property (weak) IBOutlet GemServerSheetController *sheetControllerGemServer;
 
 - (IBAction)btnRemoveInterpreter:(id)sender;
 - (IBAction)btnRemoveGemset:(id)sender;
@@ -51,6 +58,8 @@
 
 - (IBAction)toolbarBtnLaunchTerminal:(id)sender;
 - (IBAction)toolbarBtnCreateRvmrc:(id)sender;
+- (IBAction)toolbarBtnLaunchRubyDocs:(id)sender;
+- (IBAction)toolbarBtnLaunchGemServer:(id)sender;
 
 - (void)reloadInterpreters;
 - (void)reloadGemsetList;

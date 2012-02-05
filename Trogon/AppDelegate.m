@@ -14,6 +14,8 @@
 @implementation AppDelegate
 @synthesize sheetControllerProgress = _sheetControllerProgress;
 @synthesize sheetControllerRvm = _sheetControllerRvm;
+@synthesize sheetControllerRubyDoc = _sheetControllerRubyDoc;
+@synthesize sheetControllerGemServer = _sheetControllerGemServer;
 @synthesize window = _window;
 @synthesize rvms = _rvms;
 @synthesize gemsets = _gemsets;
@@ -53,6 +55,18 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addRvmNotification:)
                                                  name:@"TrogonAddRvm" 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(launchRdocBrowser:)
+                                                 name:@"TrogonLaunchRdocBrowser" 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(startGemServer:)
+                                                 name:@"TrogonStartGemServer" 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(stopGemServer:)
+                                                 name:@"TrogonStopGemServer" 
                                                object:nil];
 
     return self;
@@ -135,9 +149,26 @@
     NSError *error;
     NSURL *rvmScriptAddress = [NSURL URLWithString:@"https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer"];
     NSString *rvmScript = [NSString stringWithContentsOfURL:rvmScriptAddress encoding:NSUTF8StringEncoding error:&error];
-    NSString *rvmCmd = [NSString stringWithFormat:@"stable < <(%@)", rvmScript];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-s", rvmCmd, nil] 
+//    NSString *rvmCmd = [NSString stringWithFormat:@"/bin/bash -s stable < <(%@)", rvmScript];
+    [[Task sharedTask] performTask:@"/bin/sh" 
+                     withArguments:[NSArray arrayWithObjects:@"-c", rvmScript, nil] 
+                            object:nil
+                          selector:nil
+                       synchronous:YES];
+}
+
+- (void)addRubyDocNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshGemsNotification:)
+                                                 name:@"TrogonAddRubyDoc" 
+                                               object:nil];
+    
+    [_sheetControllerProgress add:self action:@"install_ruby_doc"];
+    
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs generate", rvmPath, self.ruby.interpreter];
+    [[Task sharedTask] performTask:@"/bin/sh" 
+                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
                             object:nil
                           selector:nil
                        synchronous:YES];
@@ -165,6 +196,46 @@
                                                   object:nil];
     
     [self reloadGemList];
+}
+
+- (void)launchRdocBrowser:(NSNotification *)notification {
+    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+        return;
+    }
+    
+    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.interpreter];
+    [[Task sharedTask] performTask:@"/bin/sh" 
+                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
+                            object:self
+                          selector:@selector(readGemList:)
+                       synchronous:NO];
+}
+
+- (void)startGemServer:(NSNotification *)notification {
+    NSString *port = (NSString *)[[notification userInfo] objectForKey:@"port"];
+    
+    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+        return;
+    }
+    if ([[self.aryGemSetsController selectedObjects] count] == 0) {
+        return;
+    }
+        
+    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+
+    _gemServer = [[GemServer alloc] init];
+    [_gemServer launchGemServer:self.ruby.interpreter 
+                         gemset:gemset.name 
+                           port:port];
+}
+
+- (void)stopGemServer:(NSNotification *)notification {
+    [_gemServer killGemServer];
+    _gemServer = nil;
 }
 
 - (void)reloadInterpreters {
@@ -261,8 +332,12 @@
 }
 
 - (void)reloadGemList {
-    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+    if ([[self.aryGemSetsController selectedObjects] count] == 0) {
+        return;
+    }
     
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+
     [self.tblGem reloadData];
 
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
@@ -274,7 +349,7 @@
                        synchronous:NO];
 }
 
--(void)readGemList: (NSString *)output {
+- (void)readGemList:(NSString *)output {
     [self.gems removeAllObjects];
     
     NSInteger gemCount = 0;
@@ -298,6 +373,12 @@
         self.gems = self.gems;
     }
 
+}
+
+- (void)readRubyDocs:(NSString *)output {
+    if ([output hasPrefix:@"ERROR: rdoc docs are missing"]) {
+        [_sheetControllerRubyDoc add:self];
+    }
 }
 
 - (IBAction)btnRemoveInterpreter:(id)sender {
@@ -361,20 +442,30 @@
 
 - (IBAction)toolbarBtnLaunchTerminal:(id)sender {
     if ([[self.aryRvmsController selectedObjects] count] == 0) {
-        //TODO: replace with fancier alert
         NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
                                          defaultButton:@"OK" 
                                        alternateButton:nil
                                            otherButton:nil
                              informativeTextWithFormat:@"Please select a ruby from the list"];
-        [alert runModal];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
         return;
     }
+    if ([[self.aryGemSetsController selectedObjects] count] == 0) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
+                                         defaultButton:@"OK" 
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Please select a gemset from the list"];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+        return;
+    }
+
     Ruby *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
     
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to do script \"source %@ && rvm %@\" activate", rvmPath, interpreter];
+    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to do script \"source %@ && rvm %@ && rvm gemset use %@\" activate", rvmPath, interpreter, gemset.name];
     NSDictionary *errorInfo;
 
     NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];
@@ -395,13 +486,21 @@
 
 - (IBAction)toolbarBtnCreateRvmrc:(id)sender {
     if ([[self.aryRvmsController selectedObjects] count] == 0) {
-        //TODO: replace with fancier alert
         NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
                                          defaultButton:@"OK" 
                                        alternateButton:nil
                                            otherButton:nil
                              informativeTextWithFormat:@"Please select a ruby from the list"];
-        [alert runModal];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+        return;
+    }
+    if ([[self.aryGemSetsController selectedObjects] count] == 0) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
+                                         defaultButton:@"OK" 
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Please select a gemset from the list"];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
         return;
     }
 
@@ -419,10 +518,10 @@
         if (returnCode == NSOKButton) {
             pathToFile = [[oPanel URLs] objectAtIndex:0];
 
-            Ruby *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
-            NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
-            
+            self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
             GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+
+            NSString *interpreter = [self.ruby.interpreter stringByTrimmingTrailingWhitespace];
             
             NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
             NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && cd %@ && rvm --rvmrc --create %@@%@", rvmPath, [pathToFile path], interpreter, gemset.name];
@@ -441,14 +540,55 @@
     }];
 }
 
+- (IBAction)toolbarBtnLaunchRubyDocs:(id)sender {
+    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
+                                         defaultButton:@"OK" 
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Please select a ruby from the list"];
+
+        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+        return;
+    }
+    
+    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(addRubyDocNotification:)
+                                                 name:@"TrogonAddRubyDoc" 
+                                               object:nil];
+    
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.interpreter];
+    [[Task sharedTask] performTask:@"/bin/sh" 
+                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
+                            object:self
+                          selector:@selector(readRubyDocs:)
+                       synchronous:NO];
+}
+
+- (IBAction)toolbarBtnLaunchGemServer:(id)sender {
+    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+        return;
+    }
+    if ([[self.aryGemSetsController selectedObjects] count] == 0) {
+        return;
+    }
+    
+    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+
+    [_sheetControllerGemServer add:self ruby:self.ruby.interpreter gem:gemset.name];
+}
+
 - (void)rvmrcInstalled:(NSURL *)pathToFile {
-    //TODO: replace with fancier alert
     NSAlert *alert = [NSAlert alertWithMessageText:@"SUCCESS" 
                                      defaultButton:@"OK" 
                                    alternateButton:nil
                                        otherButton:nil
                          informativeTextWithFormat:@".rvmrc was created at: %@", [pathToFile path]];
-    [alert runModal];
-}
 
+    [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
 @end
