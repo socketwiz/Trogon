@@ -28,7 +28,7 @@
     __weak NSTableView *_tblRvm;
     __weak NSTableView *_tblGemset;
     __weak NSTableView *_tblGem;
-    __weak NSArrayController *_aryRvmsController;
+    __weak NSArrayController *_aryRubyController;
     __weak NSArrayController *_aryGemSetsController;
     __weak NSArrayController *_aryGemsController;
     __weak ProgressSheetController *_sheetControllerProgress;
@@ -43,7 +43,7 @@
 @property (weak) IBOutlet NSTableView *tblRvm;
 @property (weak) IBOutlet NSTableView *tblGemset;
 @property (weak) IBOutlet NSTableView *tblGem;
-@property (weak) IBOutlet NSArrayController *aryRvmsController;
+@property (weak) IBOutlet NSArrayController *aryRubyController;
 @property (weak) IBOutlet NSArrayController *aryGemSetsController;
 @property (weak) IBOutlet NSArrayController *aryGemsController;
 

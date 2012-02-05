@@ -26,7 +26,7 @@
 @synthesize tblGemset = _tblGemset;
 @synthesize tblGem = _tblGem;
 
-@synthesize aryRvmsController = _aryRvmsController;
+@synthesize aryRubyController = _aryRubyController;
 @synthesize aryGemSetsController = _aryGemSetsController;
 @synthesize aryGemsController = _aryGemsController;
 
@@ -199,11 +199,11 @@
 }
 
 - (void)launchRdocBrowser:(NSNotification *)notification {
-    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+    if ([[self.aryRubyController selectedObjects] count] == 0) {
         return;
     }
     
-    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.interpreter];
@@ -217,14 +217,14 @@
 - (void)startGemServer:(NSNotification *)notification {
     NSString *port = (NSString *)[[notification userInfo] objectForKey:@"port"];
     
-    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+    if ([[self.aryRubyController selectedObjects] count] == 0) {
         return;
     }
     if ([[self.aryGemSetsController selectedObjects] count] == 0) {
         return;
     }
         
-    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
 
     _gemServer = [[GemServer alloc] init];
@@ -283,7 +283,7 @@
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
 	if ([aNotification object] == _tblRvm) {
-        if ([[self.aryRvmsController selectedObjects] count] == 0) {
+        if ([[self.aryRubyController selectedObjects] count] == 0) {
             return;
         }
         
@@ -300,7 +300,7 @@
 }
 
 - (void)reloadGemsetList {
-    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
 
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset list", rvmPath, self.ruby.interpreter];
@@ -389,7 +389,7 @@
 
     [_sheetControllerProgress add:self action:@"uninstall_ruby"];
     
-    Ruby *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    Ruby *rvm = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
@@ -441,7 +441,7 @@
 }
 
 - (IBAction)toolbarBtnLaunchTerminal:(id)sender {
-    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+    if ([[self.aryRubyController selectedObjects] count] == 0) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
                                          defaultButton:@"OK" 
                                        alternateButton:nil
@@ -460,14 +460,14 @@
         return;
     }
 
-    Ruby *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    Ruby *rvm = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
     
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"source %@ && rvm %@ && rvm gemset use %@\" in window 1) activate", rvmPath, interpreter, gemset.name];
+    
     NSDictionary *errorInfo;
-
     NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];
     [scriptObject executeAndReturnError:&errorInfo];
     
@@ -485,7 +485,7 @@
 }
 
 - (IBAction)toolbarBtnCreateRvmrc:(id)sender {
-    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+    if ([[self.aryRubyController selectedObjects] count] == 0) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
                                          defaultButton:@"OK" 
                                        alternateButton:nil
@@ -518,7 +518,7 @@
         if (returnCode == NSOKButton) {
             pathToFile = [[oPanel URLs] objectAtIndex:0];
 
-            self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+            self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
             GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
 
             NSString *interpreter = [self.ruby.interpreter stringByTrimmingTrailingWhitespace];
@@ -541,7 +541,7 @@
 }
 
 - (IBAction)toolbarBtnLaunchRubyDocs:(id)sender {
-    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+    if ([[self.aryRubyController selectedObjects] count] == 0) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
                                          defaultButton:@"OK" 
                                        alternateButton:nil
@@ -552,7 +552,7 @@
         return;
     }
     
-    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addRubyDocNotification:)
@@ -569,14 +569,14 @@
 }
 
 - (IBAction)toolbarBtnLaunchGemServer:(id)sender {
-    if ([[self.aryRvmsController selectedObjects] count] == 0) {
+    if ([[self.aryRubyController selectedObjects] count] == 0) {
         return;
     }
     if ([[self.aryGemSetsController selectedObjects] count] == 0) {
         return;
     }
     
-    self.ruby = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
+    self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
 
     [_sheetControllerGemServer add:self ruby:self.ruby.interpreter gem:gemset.name];
