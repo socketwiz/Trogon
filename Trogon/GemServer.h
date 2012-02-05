@@ -8,6 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GemServer : NSObject
+@interface GemServer : NSObject {
+    NSTask *_task;
+}
 
+- (void)launchGemServer:(NSString *)ruby 
+                 gemset:(NSString *)aGemset 
+                   port:(NSString *)port;
+- (void)killGemServer;
 @end
