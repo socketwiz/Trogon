@@ -465,7 +465,7 @@
     
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to do script \"source %@ && rvm %@ && rvm gemset use %@\" activate", rvmPath, interpreter, gemset.name];
+    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"source %@ && rvm %@ && rvm gemset use %@\" in window 1) activate", rvmPath, interpreter, gemset.name];
     NSDictionary *errorInfo;
 
     NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];
