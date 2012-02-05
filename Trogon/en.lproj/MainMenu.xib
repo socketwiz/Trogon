@@ -868,6 +868,47 @@
 							<bool key="NSToolbarIsUserRemovable">YES</bool>
 							<int key="NSToolbarItemVisibilityPriority">0</int>
 						</object>
+						<object class="NSToolbarItem" key="8B324112-0E47-4E1E-94A9-74461B973A08" id="623936961">
+							<object class="NSMutableString" key="NSToolbarItemIdentifier">
+								<characters key="NS.bytes">8B324112-0E47-4E1E-94A9-74461B973A08</characters>
+							</object>
+							<string key="NSToolbarItemLabel">Ruby Docs</string>
+							<string key="NSToolbarItemPaletteLabel">Ruby Docs</string>
+							<string key="NSToolbarItemToolTip"/>
+							<nil key="NSToolbarItemView"/>
+							<object class="NSCustomResource" key="NSToolbarItemImage" id="541766426">
+								<string key="NSClassName">NSImage</string>
+								<string key="NSResourceName">ruby_doc</string>
+							</object>
+							<nil key="NSToolbarItemTarget"/>
+							<nil key="NSToolbarItemAction"/>
+							<string key="NSToolbarItemMinSize">{0, 0}</string>
+							<string key="NSToolbarItemMaxSize">{0, 0}</string>
+							<bool key="NSToolbarItemEnabled">YES</bool>
+							<bool key="NSToolbarItemAutovalidates">YES</bool>
+							<int key="NSToolbarItemTag">-1</int>
+							<bool key="NSToolbarIsUserRemovable">YES</bool>
+							<int key="NSToolbarItemVisibilityPriority">0</int>
+						</object>
+						<object class="NSToolbarItem" key="9AC5C7D5-06B3-4A39-B7E4-21D25CEC6386" id="701798813">
+							<object class="NSMutableString" key="NSToolbarItemIdentifier">
+								<characters key="NS.bytes">9AC5C7D5-06B3-4A39-B7E4-21D25CEC6386</characters>
+							</object>
+							<string key="NSToolbarItemLabel">Gem Docs</string>
+							<string key="NSToolbarItemPaletteLabel">Gem Docs</string>
+							<string key="NSToolbarItemToolTip"/>
+							<nil key="NSToolbarItemView"/>
+							<reference key="NSToolbarItemImage" ref="541766426"/>
+							<nil key="NSToolbarItemTarget"/>
+							<nil key="NSToolbarItemAction"/>
+							<string key="NSToolbarItemMinSize">{0, 0}</string>
+							<string key="NSToolbarItemMaxSize">{0, 0}</string>
+							<bool key="NSToolbarItemEnabled">YES</bool>
+							<bool key="NSToolbarItemAutovalidates">YES</bool>
+							<int key="NSToolbarItemTag">-1</int>
+							<bool key="NSToolbarIsUserRemovable">YES</bool>
+							<int key="NSToolbarItemVisibilityPriority">0</int>
+						</object>
 						<object class="NSToolbarItem" key="C593EE7B-A827-4073-9531-7E5EEFCF38BF" id="787429715">
 							<object class="NSMutableString" key="NSToolbarItemIdentifier">
 								<characters key="NS.bytes">C593EE7B-A827-4073-9531-7E5EEFCF38BF</characters>
@@ -992,9 +1033,11 @@
 							</object>
 						</object>
 					</dictionary>
-					<array key="NSToolbarIBAllowedItems">
+					<array class="NSMutableArray" key="NSToolbarIBAllowedItems">
 						<reference ref="787429715"/>
 						<reference ref="891255986"/>
+						<reference ref="623936961"/>
+						<reference ref="701798813"/>
 						<reference ref="738154161"/>
 						<reference ref="252534019"/>
 						<reference ref="382309377"/>
@@ -1003,6 +1046,8 @@
 					<array key="NSToolbarIBDefaultItems">
 						<reference ref="787429715"/>
 						<reference ref="891255986"/>
+						<reference ref="623936961"/>
+						<reference ref="701798813"/>
 						<reference ref="382309377"/>
 						<reference ref="738154161"/>
 						<reference ref="252534019"/>
@@ -1666,7 +1711,7 @@
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="118996392"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {2560, 1418}}</string>
+				<string key="NSScreenRect">{{0, 0}, {2560, 1440}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -1729,6 +1774,12 @@
 			</object>
 			<object class="NSCustomObject" id="904647962">
 				<string key="NSClassName">RvmSheetController</string>
+			</object>
+			<object class="NSCustomObject" id="426047004">
+				<string key="NSClassName">RubyDocSheetController</string>
+			</object>
+			<object class="NSCustomObject" id="29648430">
+				<string key="NSClassName">GemServerSheetController</string>
 			</object>
 		</array>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -2254,6 +2305,38 @@
 					<int key="connectionID">661</int>
 				</object>
 				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">toolbarBtnLaunchRubyDocs:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="623936961"/>
+					</object>
+					<int key="connectionID">663</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">sheetControllerRubyDoc</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="426047004"/>
+					</object>
+					<int key="connectionID">668</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">sheetControllerGemServer</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="29648430"/>
+					</object>
+					<int key="connectionID">671</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">toolbarBtnLaunchGemServer:</string>
+						<reference key="source" ref="976324537"/>
+						<reference key="destination" ref="701798813"/>
+					</object>
+					<int key="connectionID">673</int>
+				</object>
+				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
 						<string key="label">delegate</string>
 						<reference key="source" ref="497391899"/>
@@ -2436,6 +2519,22 @@
 						<reference key="destination" ref="439893737"/>
 					</object>
 					<int key="connectionID">660</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">documentWindow</string>
+						<reference key="source" ref="426047004"/>
+						<reference key="destination" ref="439893737"/>
+					</object>
+					<int key="connectionID">666</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">documentWindow</string>
+						<reference key="source" ref="29648430"/>
+						<reference key="destination" ref="439893737"/>
+					</object>
+					<int key="connectionID">670</int>
 				</object>
 			</array>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -3393,6 +3492,8 @@
 							<reference ref="524365541"/>
 							<reference ref="787429715"/>
 							<reference ref="891255986"/>
+							<reference ref="623936961"/>
+							<reference ref="701798813"/>
 						</array>
 						<reference key="parent" ref="972006081"/>
 					</object>
@@ -3430,6 +3531,26 @@
 						<int key="objectID">659</int>
 						<reference key="object" ref="904647962"/>
 						<reference key="parent" ref="0"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">662</int>
+						<reference key="object" ref="623936961"/>
+						<reference key="parent" ref="104321437"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">664</int>
+						<reference key="object" ref="426047004"/>
+						<reference key="parent" ref="0"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">669</int>
+						<reference key="object" ref="29648430"/>
+						<reference key="parent" ref="0"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">672</int>
+						<reference key="object" ref="701798813"/>
+						<reference key="parent" ref="104321437"/>
 					</object>
 				</array>
 			</object>
@@ -3575,6 +3696,10 @@
 				<string key="653.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="657.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="659.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="662.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="664.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="669.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="672.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="72.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="73.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="74.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -3591,7 +3716,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">661</int>
+			<int key="maxID">673</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -3603,6 +3728,8 @@
 						<string key="btnRemoveGemset:">id</string>
 						<string key="btnRemoveInterpreter:">id</string>
 						<string key="toolbarBtnCreateRvmrc:">id</string>
+						<string key="toolbarBtnLaunchGemServer:">id</string>
+						<string key="toolbarBtnLaunchRubyDocs:">id</string>
 						<string key="toolbarBtnLaunchTerminal:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
@@ -3622,6 +3749,14 @@
 							<string key="name">toolbarBtnCreateRvmrc:</string>
 							<string key="candidateClassName">id</string>
 						</object>
+						<object class="IBActionInfo" key="toolbarBtnLaunchGemServer:">
+							<string key="name">toolbarBtnLaunchGemServer:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="toolbarBtnLaunchRubyDocs:">
+							<string key="name">toolbarBtnLaunchRubyDocs:</string>
+							<string key="candidateClassName">id</string>
+						</object>
 						<object class="IBActionInfo" key="toolbarBtnLaunchTerminal:">
 							<string key="name">toolbarBtnLaunchTerminal:</string>
 							<string key="candidateClassName">id</string>
@@ -3631,7 +3766,9 @@
 						<string key="aryGemSetsController">NSArrayController</string>
 						<string key="aryGemsController">NSArrayController</string>
 						<string key="aryRvmsController">NSArrayController</string>
+						<string key="sheetControllerGemServer">GemServerSheetController</string>
 						<string key="sheetControllerProgress">ProgressSheetController</string>
+						<string key="sheetControllerRubyDoc">RubyDocSheetController</string>
 						<string key="sheetControllerRvm">RvmSheetController</string>
 						<string key="tblGem">NSTableView</string>
 						<string key="tblGemset">NSTableView</string>
@@ -3651,9 +3788,17 @@
 							<string key="name">aryRvmsController</string>
 							<string key="candidateClassName">NSArrayController</string>
 						</object>
+						<object class="IBToOneOutletInfo" key="sheetControllerGemServer">
+							<string key="name">sheetControllerGemServer</string>
+							<string key="candidateClassName">GemServerSheetController</string>
+						</object>
 						<object class="IBToOneOutletInfo" key="sheetControllerProgress">
 							<string key="name">sheetControllerProgress</string>
 							<string key="candidateClassName">ProgressSheetController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="sheetControllerRubyDoc">
+							<string key="name">sheetControllerRubyDoc</string>
+							<string key="candidateClassName">RubyDocSheetController</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="sheetControllerRvm">
 							<string key="name">sheetControllerRvm</string>
@@ -3687,6 +3832,92 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/BackgroundView.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">GemServerSheetController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="cancel:">id</string>
+						<string key="complete:">id</string>
+						<string key="startGemServer:">id</string>
+						<string key="stopGemServer:">id</string>
+						<string key="viewDocs:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="cancel:">
+							<string key="name">cancel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="complete:">
+							<string key="name">complete:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="startGemServer:">
+							<string key="name">startGemServer:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="stopGemServer:">
+							<string key="name">stopGemServer:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="viewDocs:">
+							<string key="name">viewDocs:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="btnClose">NSButton</string>
+						<string key="btnStart">NSButton</string>
+						<string key="btnStop">NSButton</string>
+						<string key="btnViewDocs">NSButton</string>
+						<string key="documentWindow">NSView</string>
+						<string key="lblGem">NSTextField</string>
+						<string key="objectSheet">NSPanel</string>
+						<string key="txtPort">NSTextField</string>
+						<string key="txtViewGemServerOutput">NSTextView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="btnClose">
+							<string key="name">btnClose</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="btnStart">
+							<string key="name">btnStart</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="btnStop">
+							<string key="name">btnStop</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="btnViewDocs">
+							<string key="name">btnViewDocs</string>
+							<string key="candidateClassName">NSButton</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="documentWindow">
+							<string key="name">documentWindow</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="lblGem">
+							<string key="name">lblGem</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="objectSheet">
+							<string key="name">objectSheet</string>
+							<string key="candidateClassName">NSPanel</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="txtPort">
+							<string key="name">txtPort</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="txtViewGemServerOutput">
+							<string key="name">txtViewGemServerOutput</string>
+							<string key="candidateClassName">NSTextView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/GemServerSheetController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -3861,7 +4092,6 @@
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="btnContinue">NSButton</string>
 						<string key="documentWindow">NSView</string>
-						<string key="imgProgress">NSImageView</string>
 						<string key="lblProgress">NSTextField</string>
 						<string key="objectSheet">NSPanel</string>
 						<string key="progressWheel">NSProgressIndicator</string>
@@ -3875,10 +4105,6 @@
 						<object class="IBToOneOutletInfo" key="documentWindow">
 							<string key="name">documentWindow</string>
 							<string key="candidateClassName">NSView</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="imgProgress">
-							<string key="name">imgProgress</string>
-							<string key="candidateClassName">NSImageView</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="lblProgress">
 							<string key="name">lblProgress</string>
@@ -3900,6 +4126,47 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">./Classes/ProgressSheetController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">RubyDocSheetController</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="add:">id</string>
+						<string key="cancel:">id</string>
+						<string key="complete:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="add:">
+							<string key="name">add:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="cancel:">
+							<string key="name">cancel:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="complete:">
+							<string key="name">complete:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="documentWindow">NSView</string>
+						<string key="objectSheet">NSPanel</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="documentWindow">
+							<string key="name">documentWindow</string>
+							<string key="candidateClassName">NSView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="objectSheet">
+							<string key="name">objectSheet</string>
+							<string key="candidateClassName">NSPanel</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/RubyDocSheetController.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">
@@ -4001,6 +4268,7 @@
 			<string key="NSMenuMixedState">{7, 2}</string>
 			<string key="NSRemoveTemplate">{8, 8}</string>
 			<string key="NSToolbarCustomizeToolbarItemImage">{32, 32}</string>
+			<string key="ruby_doc">{512, 512}</string>
 			<string key="rvmrc">{512, 512}</string>
 			<string key="terminal">{512, 512}</string>
 		</dictionary>
