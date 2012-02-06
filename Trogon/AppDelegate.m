@@ -144,17 +144,23 @@
                                                  name:@"TrogonRefreshRubyInterpreter" 
                                                object:nil];
     
-    [_sheetControllerProgress add:self action:@"install_rvm"];
-
-    NSError *error;
-    NSURL *rvmScriptAddress = [NSURL URLWithString:@"https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer"];
-    NSString *rvmScript = [NSString stringWithContentsOfURL:rvmScriptAddress encoding:NSUTF8StringEncoding error:&error];
-//    NSString *rvmCmd = [NSString stringWithFormat:@"/bin/bash -s stable < <(%@)", rvmScript];
-    [[Task sharedTask] performTask:@"/bin/sh" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmScript, nil] 
-                            object:nil
-                          selector:nil
-                       synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)\" in window 1) activate"];
+    
+    NSDictionary *errorInfo;
+    NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];
+    [scriptObject executeAndReturnError:&errorInfo];
+    
+    if (errorInfo) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        NSString *errorFromAppleScript = [NSString stringWithFormat:@"AppleScript Error: %@", [errorInfo valueForKey:@"NSAppleScriptErrorMessage"]];
+        [errorDetail setValue:errorFromAppleScript forKey:NSLocalizedDescriptionKey];
+        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+        
+        NSLog(@"AppleScript Command: %@", rvmCmd);
+        NSLog(@"%@", errorFromAppleScript);
+        
+        [NSApp presentError:error];
+    }
 }
 
 - (void)addRubyDocNotification:(NSNotification *)notification {

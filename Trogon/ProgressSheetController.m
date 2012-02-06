@@ -72,10 +72,6 @@
     if ([self.action localizedCompare:@"uninstall_gem"] == NSOrderedSame) {
         [self.lblProgress setStringValue:@"Uninstalling Gem"];
     }
-
-    if ([self.action localizedCompare:@"install_rvm"] == NSOrderedSame) {
-        [self.lblProgress setStringValue:@"Installing RVM"];
-    }
     
     if ([self.action localizedCompare:@"install_ruby_doc"] == NSOrderedSame) {
         [self.lblProgress setStringValue:@"Installing Ruby Docs"];
@@ -172,13 +168,6 @@
                                                                 object:self
                                                               userInfo:nil];
             [self.lblProgress setStringValue:@"Gem Uninstall Complete"];
-        }
-
-        if ([self.action localizedCompare:@"install_rvm"] == NSOrderedSame) {            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 
-                                                                object:self
-                                                              userInfo:nil];
-            [self.lblProgress setStringValue:@"RVM Installation Complete"];
         }
         
         if ([self.action localizedCompare:@"install_ruby_doc"] == NSOrderedSame) {            

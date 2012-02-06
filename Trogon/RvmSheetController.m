@@ -9,6 +9,7 @@
 #import "RvmSheetController.h"
 
 @implementation RvmSheetController
+@synthesize txtViewInstaller;
 @synthesize objectSheet;
 @synthesize documentWindow;
 
@@ -30,6 +31,12 @@
             return;
         }
     }
+
+    NSString *text = [NSString stringWithFormat:@"If you click install, a script will be downloaded from:\n\nhttps://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer\n\nand will be executed on your system in order to install the latest RVM. You are encouraged to view this script and understand it so that you feel more comfortable running it."];
+
+    [self.txtViewInstaller setEditable:YES];
+    [self.txtViewInstaller insertText:text];
+    [self.txtViewInstaller setEditable:NO];
 
     [NSApp beginSheet:objectSheet
        modalForWindow:[documentWindow window]

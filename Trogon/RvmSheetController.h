@@ -15,6 +15,7 @@
 
 @property (nonatomic, retain) IBOutlet NSView *documentWindow;
 @property (strong) IBOutlet NSPanel *objectSheet;
+@property (unsafe_unretained) IBOutlet NSTextView *txtViewInstaller;
 
 - (IBAction)add:(id)sender;
 - (IBAction)complete:(id)sender;
