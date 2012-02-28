@@ -311,7 +311,7 @@
 		6451A35B144B2E74003CCFC9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Lark Software";
 			};
 			buildConfigurationList = 6451A35E144B2E74003CCFC9 /* Build configuration list for PBXProject "Trogon" */;
