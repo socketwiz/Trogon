@@ -68,8 +68,17 @@
                                              selector:@selector(stopGemServer:)
                                                  name:@"TrogonStopGemServer" 
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(launchTerminalNotification:)
+                                                 name:@"TrogonLaunchTerminal" 
+                                               object:nil];
 
     return self;
+}
+
+- (BOOL) applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)theApplication
+{
+    return YES;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -272,9 +281,14 @@
             
             if ([interpreters count] > 1) {
                 if ([[interpreters objectAtIndex:0] localizedCompare:@"=>"] == NSOrderedSame) {
+                    // there is a default ruby set
                     aRvm.interpreter = [interpreters objectAtIndex:1];
                 }
+                else if ([[interpreters objectAtIndex:0] localizedCompare:@"#"] == NSOrderedSame) {
+                    continue; // brand new install, no rubies installed
+                }
                 else {
+                    // 1 or more rubies installed, none set as default
                     aRvm.interpreter = [interpreters objectAtIndex:0];
                 }
                 [self.rvms addObject:aRvm];
@@ -364,6 +378,13 @@
         if ([line length] == 0) { // skip empty lines
             continue;
         }
+        if ([line hasPrefix:@"Using"]) {
+            Gem *aGem = [[Gem alloc] init];
+            aGem.name = @"No gems for this gemset";
+            [self.gems addObject:aGem];
+            self.gems = self.gems;
+            continue;
+        }
         
         Gem *aGem = [[Gem alloc] init];
         aGem.name = [line stringByTrimmingLeadingWhitespace];
@@ -447,47 +468,7 @@
 }
 
 - (IBAction)toolbarBtnLaunchTerminal:(id)sender {
-    if ([[self.aryRubyController selectedObjects] count] == 0) {
-        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
-                                         defaultButton:@"OK" 
-                                       alternateButton:nil
-                                           otherButton:nil
-                             informativeTextWithFormat:@"Please select a ruby from the list"];
-        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-        return;
-    }
-    if ([[self.aryGemSetsController selectedObjects] count] == 0) {
-        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
-                                         defaultButton:@"OK" 
-                                       alternateButton:nil
-                                           otherButton:nil
-                             informativeTextWithFormat:@"Please select a gemset from the list"];
-        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
-        return;
-    }
-
-    Ruby *rvm = [[self.aryRubyController selectedObjects] objectAtIndex:0];
-    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
-    
-    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
-    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"source %@ && rvm %@ && rvm gemset use %@\" in window 1) activate", rvmPath, interpreter, gemset.name];
-    
-    NSDictionary *errorInfo;
-    NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];
-    [scriptObject executeAndReturnError:&errorInfo];
-    
-    if (errorInfo) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        NSString *errorFromAppleScript = [NSString stringWithFormat:@"AppleScript Error: %@", [errorInfo valueForKey:@"NSAppleScriptErrorMessage"]];
-        [errorDetail setValue:errorFromAppleScript forKey:NSLocalizedDescriptionKey];
-        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
-        
-        NSLog(@"AppleScript Command: %@", rvmCmd);
-        NSLog(@"%@", errorFromAppleScript);
-        
-        [NSApp presentError:error];
-    }
+    [self launchTerminal];
 }
 
 - (IBAction)toolbarBtnCreateRvmrc:(id)sender {
@@ -596,5 +577,54 @@
                          informativeTextWithFormat:@".rvmrc was created at: %@", [pathToFile path]];
 
     [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+}
+
+- (void)launchTerminalNotification:(NSNotification *)aNotification
+{
+    [self launchTerminal];
+}
+
+- (void)launchTerminal {
+    if ([[self.aryRubyController selectedObjects] count] == 0) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
+                                         defaultButton:@"OK" 
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Please select a ruby from the list"];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+        return;
+    }
+    if ([[self.aryGemSetsController selectedObjects] count] == 0) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
+                                         defaultButton:@"OK" 
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:@"Please select a gemset from the list"];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:nil contextInfo:nil];
+        return;
+    }
+    
+    Ruby *rvm = [[self.aryRubyController selectedObjects] objectAtIndex:0];
+    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+    
+    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"source %@ && rvm %@ && rvm gemset use %@\" in window 1) activate", rvmPath, interpreter, gemset.name];
+    
+    NSDictionary *errorInfo;
+    NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];
+    [scriptObject executeAndReturnError:&errorInfo];
+    
+    if (errorInfo) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        NSString *errorFromAppleScript = [NSString stringWithFormat:@"AppleScript Error: %@", [errorInfo valueForKey:@"NSAppleScriptErrorMessage"]];
+        [errorDetail setValue:errorFromAppleScript forKey:NSLocalizedDescriptionKey];
+        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+        
+        NSLog(@"AppleScript Command: %@", rvmCmd);
+        NSLog(@"%@", errorFromAppleScript);
+        
+        [NSApp presentError:error];
+    }
 }
 @end

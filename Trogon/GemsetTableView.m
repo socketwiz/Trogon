@@ -16,6 +16,10 @@
     
     item = [[NSMenuItem alloc] initWithTitle:title action:@selector(launchWithTerminal:) keyEquivalent:@""];
     [gemsetMenu addItem:item];
+    
+    title = @"Show Info";
+    item = [[NSMenuItem alloc] initWithTitle:title action:@selector(showInfo:) keyEquivalent:@""];
+    [gemsetMenu addItem:item];
 
     [[self window] setAcceptsMouseMovedEvents:YES];
 	trackingTag = [self addTrackingRect:[self frame] owner:self userData:nil assumeInside:NO];
@@ -25,18 +29,22 @@
 }
 
 -(void)setSelectionFromClick{
-    NSLog(@"Clicked row[%ld]", mouseOverRow);
     NSIndexSet *thisIndexSet = [NSIndexSet indexSetWithIndex:mouseOverRow];
     [self selectRowIndexes:thisIndexSet byExtendingSelection:NO];
 }
 
 - (IBAction)launchWithTerminal:(id)sender {
-    NSLog(@"Launch Terminal");
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonLaunchTerminal" 
+                                                        object:self
+                                                      userInfo:nil];
+}
+
+- (IBAction)showInfo:(id)sender {
+    NSLog(@"Show Info");
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)evt 
 {
-    NSLog(@"menuForEvent");
     [self setSelectionFromClick];
     return gemsetMenu;
 }
