@@ -2,13 +2,13 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">11C74</string>
-		<string key="IBDocument.InterfaceBuilderVersion">1938</string>
-		<string key="IBDocument.AppKitVersion">1138.23</string>
-		<string key="IBDocument.HIToolboxVersion">567.00</string>
+		<string key="IBDocument.SystemVersion">11D50</string>
+		<string key="IBDocument.InterfaceBuilderVersion">2177</string>
+		<string key="IBDocument.AppKitVersion">1138.32</string>
+		<string key="IBDocument.HIToolboxVersion">568.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
-			<string key="NS.object.0">1938</string>
+			<string key="NS.object.0">2177</string>
 		</object>
 		<array key="IBDocument.IntegratedClassDependencies">
 			<string>NSMenu</string>
@@ -939,7 +939,7 @@
 							<nil key="NSToolbarItemView"/>
 							<object class="NSCustomResource" key="NSToolbarItemImage">
 								<string key="NSClassName">NSImage</string>
-								<string key="NSResourceName">NSToolbarCustomizeToolbarItemImage</string>
+								<string key="NSResourceName">NSToolbarCustomize</string>
 							</object>
 							<nil key="NSToolbarItemTarget"/>
 							<string key="NSToolbarItemAction">runToolbarCustomizationPalette:</string>
@@ -1196,7 +1196,7 @@
 									<string key="NSFrame">{{1, 119}, {223, 15}}</string>
 									<reference key="NSSuperview" ref="631981793"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="887195674"/>
+									<reference key="NSNextKeyView" ref="148052647"/>
 									<string key="NSReuseIdentifierKey">_NS:1847</string>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="631981793"/>
@@ -1311,7 +1311,7 @@
 									<string key="NSFrame">{{1, 119}, {223, 15}}</string>
 									<reference key="NSSuperview" ref="148052647"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="219604649"/>
+									<reference key="NSNextKeyView" ref="355873664"/>
 									<string key="NSReuseIdentifierKey">_NS:1847</string>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="148052647"/>
@@ -1482,7 +1482,7 @@
 									<string key="NSFrame">{{210, 0}, {30, 30}}</string>
 									<reference key="NSSuperview" ref="118996392"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="631981793"/>
+									<reference key="NSNextKeyView" ref="887195674"/>
 									<string key="NSReuseIdentifierKey">_NS:2510</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="968731696">
@@ -1575,7 +1575,7 @@
 									<string key="NSFrame">{{210, 0}, {30, 30}}</string>
 									<reference key="NSSuperview" ref="887195674"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="148052647"/>
+									<reference key="NSNextKeyView" ref="219604649"/>
 									<string key="NSReuseIdentifierKey">_NS:2510</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="299526378">
@@ -1657,7 +1657,7 @@
 									<string key="NSFrame">{{210, 0}, {30, 30}}</string>
 									<reference key="NSSuperview" ref="219604649"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView" ref="355873664"/>
+									<reference key="NSNextKeyView" ref="631981793"/>
 									<string key="NSReuseIdentifierKey">_NS:2510</string>
 									<bool key="NSEnabled">YES</bool>
 									<object class="NSButtonCell" key="NSCell" id="765764273">
@@ -2358,14 +2358,6 @@
 						</object>
 					</object>
 					<int key="connectionID">567</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">delegate</string>
-						<reference key="source" ref="553164028"/>
-						<reference key="destination" ref="976324537"/>
-					</object>
-					<int key="connectionID">584</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4268,10 +4260,10 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 		<dictionary class="NSMutableDictionary" key="IBDocument.LastKnownImageSizes">
 			<string key="NSAddTemplate">{8, 8}</string>
-			<string key="NSMenuCheckmark">{9, 8}</string>
-			<string key="NSMenuMixedState">{7, 2}</string>
+			<string key="NSMenuCheckmark">{11, 11}</string>
+			<string key="NSMenuMixedState">{10, 3}</string>
 			<string key="NSRemoveTemplate">{8, 8}</string>
-			<string key="NSToolbarCustomizeToolbarItemImage">{32, 32}</string>
+			<string key="NSToolbarCustomize">{32, 32}</string>
 			<string key="ruby_doc">{512, 512}</string>
 			<string key="rvmrc">{512, 512}</string>
 			<string key="terminal">{512, 512}</string>
