@@ -101,7 +101,7 @@
     interpreter = [interpreter stringByReplacingOccurrencesOfString:@"]" withString:@""];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm install %@", rvmPath, interpreter];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
                             object:nil
                           selector:nil
@@ -120,7 +120,7 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset create %@", rvmPath, self.ruby.interpreter, gemset];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
                             object:nil
                           selector:nil
@@ -140,7 +140,7 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem install %@", rvmPath, self.ruby.interpreter, gemset.name, gem];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
                             object:nil
                           selector:nil
@@ -182,7 +182,7 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs generate", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
                             object:nil
                           selector:nil
@@ -222,7 +222,7 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                             object:self
                           selector:@selector(readGemList:)
@@ -257,7 +257,7 @@
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:rvmPath]) {
         NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list", rvmPath];
-        [[Task sharedTask] performTask:@"/bin/sh" 
+        [[Task sharedTask] performTask:@"/bin/bash" 
                          withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                                 object:self
                               selector:@selector(readInterpreterData:)
@@ -324,7 +324,7 @@
 
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset list", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                             object:self
                           selector:@selector(readGemsetList:)
@@ -362,7 +362,7 @@
 
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem list", rvmPath, self.ruby.interpreter, gemset.name];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                             object:self
                           selector:@selector(readGemList:)
@@ -379,11 +379,12 @@
             continue;
         }
         if ([line hasPrefix:@"Using"]) {
-            Gem *aGem = [[Gem alloc] init];
-            aGem.name = @"No gems for this gemset";
-            [self.gems addObject:aGem];
-            self.gems = self.gems;
             continue;
+//            Gem *aGem = [[Gem alloc] init];
+//            aGem.name = @"No gems for this gemset";
+//            [self.gems addObject:aGem];
+//            self.gems = self.gems;
+//            continue;
         }
         
         Gem *aGem = [[Gem alloc] init];
@@ -421,7 +422,7 @@
     NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm remove %@ --archive", rvmPath, interpreter];
-    (void)[[Task sharedTask] performTask:@"/bin/sh" 
+    (void)[[Task sharedTask] performTask:@"/bin/bash" 
                            withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                                   object:nil
                                 selector:nil
@@ -440,7 +441,7 @@
 
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm --force gemset delete %@", rvmPath, self.ruby.interpreter, gemset.name];
-    (void)[[Task sharedTask] performTask:@"/bin/sh" 
+    (void)[[Task sharedTask] performTask:@"/bin/bash" 
                            withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                                   object:nil
                                 selector:nil
@@ -460,7 +461,7 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem uninstall %@", rvmPath, self.ruby.interpreter, gemset.name, gem.nameWithoutVersion];
-    (void)[[Task sharedTask] performTask:@"/bin/sh" 
+    (void)[[Task sharedTask] performTask:@"/bin/bash" 
                            withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                                   object:nil
                                 selector:nil
@@ -512,7 +513,7 @@
             
             NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
             NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && cd %@ && rvm --rvmrc --create %@@%@", rvmPath, [pathToFile path], interpreter, gemset.name];
-            (void)[[Task sharedTask] performTask:@"/bin/sh" 
+            (void)[[Task sharedTask] performTask:@"/bin/bash" 
                                    withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                                           object:nil
                                         selector:nil
@@ -548,7 +549,7 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/sh" 
+    [[Task sharedTask] performTask:@"/bin/bash" 
                      withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
                             object:self
                           selector:@selector(readRubyDocs:)
