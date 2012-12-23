@@ -280,8 +280,16 @@
             NSArray *interpreters = [[line stringByTrimmingLeadingWhitespace] componentsSeparatedByString:@" "];
             
             if ([interpreters count] > 1) {
+                /* # => - current */
+                /* # =* - current && default */
+                /* #  * - default */
+                
                 if ([[interpreters objectAtIndex:0] localizedCompare:@"=>"] == NSOrderedSame) {
-                    // there is a default ruby set
+                    // this is the current ruby
+                    aRvm.interpreter = [interpreters objectAtIndex:1];
+                }
+                else if ([[interpreters objectAtIndex:0] localizedCompare:@"=*"] == NSOrderedSame) {
+                    // this is the current and default ruby set
                     aRvm.interpreter = [interpreters objectAtIndex:1];
                 }
                 else if ([[interpreters objectAtIndex:0] localizedCompare:@"#"] == NSOrderedSame) {
@@ -341,9 +349,23 @@
             cnt++;
             continue;
         }
-        
+
+        NSArray *gemsets = [[line stringByTrimmingLeadingWhitespace] componentsSeparatedByString:@" "];
+
         GemSet *aGemSet = [[GemSet alloc] init];
-        aGemSet.name = [line stringByTrimmingLeadingWhitespace];
+        if ([gemsets count] > 1) {
+            if ([[gemsets objectAtIndex:0] localizedCompare:@"=>"] == NSOrderedSame) {
+                // this is the default gemset
+                aGemSet.name = [gemsets objectAtIndex:1];
+                if ([aGemSet.name localizedCompare:@"(default)"] == NSOrderedSame) {
+                    aGemSet.name = @"default";
+                }
+            }
+        }
+        else {
+            aGemSet.name = [line stringByTrimmingLeadingWhitespace];
+        }
+
         [self.gemsets addObject:aGemSet];
         self.gemsets = self.gemsets;
     }
@@ -468,11 +490,11 @@
                              synchronous:YES];
 }
 
-- (IBAction)toolbarBtnLaunchTerminal:(id)sender {
+- (IBAction)btnLaunchTerminal:(id)sender {
     [self launchTerminal];
 }
 
-- (IBAction)toolbarBtnCreateRvmrc:(id)sender {
+- (IBAction)btnCreateRvmrc:(id)sender {
     if ([[self.aryRubyController selectedObjects] count] == 0) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
                                          defaultButton:@"OK" 
@@ -528,7 +550,7 @@
     }];
 }
 
-- (IBAction)toolbarBtnLaunchRubyDocs:(id)sender {
+- (IBAction)btnLaunchRubyDocs:(id)sender {
     if ([[self.aryRubyController selectedObjects] count] == 0) {
         NSAlert *alert = [NSAlert alertWithMessageText:@"ERROR" 
                                          defaultButton:@"OK" 
@@ -556,7 +578,7 @@
                        synchronous:NO];
 }
 
-- (IBAction)toolbarBtnLaunchGemServer:(id)sender {
+- (IBAction)btnLaunchGemServer:(id)sender {
     if ([[self.aryRubyController selectedObjects] count] == 0) {
         return;
     }

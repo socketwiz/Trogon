@@ -56,10 +56,10 @@
 - (IBAction)btnRemoveGemset:(id)sender;
 - (IBAction)btnRemoveGem:(id)sender;
 
-- (IBAction)toolbarBtnLaunchTerminal:(id)sender;
-- (IBAction)toolbarBtnCreateRvmrc:(id)sender;
-- (IBAction)toolbarBtnLaunchRubyDocs:(id)sender;
-- (IBAction)toolbarBtnLaunchGemServer:(id)sender;
+- (IBAction)btnLaunchTerminal:(id)sender;
+- (IBAction)btnCreateRvmrc:(id)sender;
+- (IBAction)btnLaunchRubyDocs:(id)sender;
+- (IBAction)btnLaunchGemServer:(id)sender;
 
 - (void)reloadInterpreters;
 - (void)reloadGemsetList;
