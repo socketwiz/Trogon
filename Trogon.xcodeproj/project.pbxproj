@@ -184,48 +184,9 @@
 		6451A36E144B2E74003CCFC9 /* Trogon */ = {
 			isa = PBXGroup;
 			children = (
-				6451A37A144B2E74003CCFC9 /* AppDelegate.h */,
-				6451A37B144B2E74003CCFC9 /* AppDelegate.m */,
-				64ADE002144BB1940099E47A /* BackgroundView.h */,
-				64ADE003144BB1940099E47A /* BackgroundView.m */,
-				64ADDFEF144B8E1F0099E47A /* Gem.h */,
-				64ADDFF0144B8E1F0099E47A /* Gem.m */,
-				647F9F6E144BBD8E005F13C1 /* GemSheet.xib */,
-				6417024E144BBC9B00F7B1F7 /* GemSheetController.h */,
-				6417024F144BBC9B00F7B1F7 /* GemSheetController.m */,
-				64362A5814DE507F00B3A89F /* GemServer.h */,
-				64362A5914DE507F00B3A89F /* GemServer.m */,
-				641C276814DECD3D000E4BAA /* GemServerSheet.xib */,
-				641C276B14DECD62000E4BAA /* GemServerSheetController.h */,
-				641C276C14DECD62000E4BAA /* GemServerSheetController.m */,
-				64ADDFEB144B8E160099E47A /* GemSet.h */,
-				64ADDFEC144B8E160099E47A /* GemSet.m */,
-				647F9F6C144BBD81005F13C1 /* GemsetSheet.xib */,
-				647F9F70144BBF88005F13C1 /* GemsetSheetController.h */,
-				647F9F71144BBF88005F13C1 /* GemsetSheetController.m */,
-				64745952147202820004698B /* GemsetTableView.h */,
-				64745953147202820004698B /* GemsetTableView.m */,
-				6451A37D144B2E74003CCFC9 /* MainMenu.xib */,
-				64ADDFFC144B98080099E47A /* NSString+trimLeadingWhitespace.h */,
-				64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */,
-				64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */,
-				64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */,
-				64E790FC144E5F7000741803 /* ProgressSheet.xib */,
-				64E790FF144E5F8200741803 /* ProgressSheetController.h */,
-				64E79100144E5F8200741803 /* ProgressSheetController.m */,
-				6451A39C144B2F01003CCFC9 /* Ruby.h */,
-				6451A39D144B2F01003CCFC9 /* Ruby.m */,
-				64170251144BBD3300F7B1F7 /* RubySheet.xib */,
-				64170247144BBC8200F7B1F7 /* RubySheetController.h */,
-				64170248144BBC8200F7B1F7 /* RubySheetController.m */,
-				64362A5314DDF77D00B3A89F /* RubyDocSheet.xib */,
-				64362A5514DDF7A900B3A89F /* RubyDocSheetController.h */,
-				64362A5614DDF7A900B3A89F /* RubyDocSheetController.m */,
-				64B3175F14DB7BA800350DC3 /* RvmSheet.xib */,
-				64B3176114DB7BD500350DC3 /* RvmSheetController.h */,
-				64B3176214DB7BD500350DC3 /* RvmSheetController.m */,
-				64E790F0144E589C00741803 /* Task.h */,
-				64E790F1144E589C00741803 /* Task.m */,
+				64C7757C15BC905F00611D74 /* controller */,
+				64C7757B15BC905A00611D74 /* view */,
+				64C7757915BC905200611D74 /* model */,
 				6451A36F144B2E74003CCFC9 /* Supporting Files */,
 			);
 			path = Trogon;
@@ -234,6 +195,10 @@
 		6451A36F144B2E74003CCFC9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				64ADDFFC144B98080099E47A /* NSString+trimLeadingWhitespace.h */,
+				64ADDFFD144B98080099E47A /* NSString+trimLeadingWhitespace.m */,
+				64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */,
+				64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */,
 				64072FAD14DDA2E900B78DD8 /* trogon.icns */,
 				64072FB114DDF19000B78DD8 /* ruby_doc.icns */,
 				64072FAF14DDBD1600B78DD8 /* rvmrc.icns */,
@@ -264,6 +229,65 @@
 				6451A38E144B2E74003CCFC9 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		64C7757915BC905200611D74 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				6451A39C144B2F01003CCFC9 /* Ruby.h */,
+				6451A39D144B2F01003CCFC9 /* Ruby.m */,
+				64ADDFEB144B8E160099E47A /* GemSet.h */,
+				64ADDFEC144B8E160099E47A /* GemSet.m */,
+				64ADDFEF144B8E1F0099E47A /* Gem.h */,
+				64ADDFF0144B8E1F0099E47A /* Gem.m */,
+			);
+			name = model;
+			sourceTree = "<group>";
+		};
+		64C7757B15BC905A00611D74 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				64ADE002144BB1940099E47A /* BackgroundView.h */,
+				64ADE003144BB1940099E47A /* BackgroundView.m */,
+				641C276814DECD3D000E4BAA /* GemServerSheet.xib */,
+				647F9F6C144BBD81005F13C1 /* GemsetSheet.xib */,
+				64745952147202820004698B /* GemsetTableView.h */,
+				64745953147202820004698B /* GemsetTableView.m */,
+				647F9F6E144BBD8E005F13C1 /* GemSheet.xib */,
+				6451A37D144B2E74003CCFC9 /* MainMenu.xib */,
+				64E790FC144E5F7000741803 /* ProgressSheet.xib */,
+				64362A5314DDF77D00B3A89F /* RubyDocSheet.xib */,
+				64170251144BBD3300F7B1F7 /* RubySheet.xib */,
+				64B3175F14DB7BA800350DC3 /* RvmSheet.xib */,
+			);
+			name = view;
+			sourceTree = "<group>";
+		};
+		64C7757C15BC905F00611D74 /* controller */ = {
+			isa = PBXGroup;
+			children = (
+				6451A37A144B2E74003CCFC9 /* AppDelegate.h */,
+				6451A37B144B2E74003CCFC9 /* AppDelegate.m */,
+				64362A5814DE507F00B3A89F /* GemServer.h */,
+				64362A5914DE507F00B3A89F /* GemServer.m */,
+				641C276B14DECD62000E4BAA /* GemServerSheetController.h */,
+				641C276C14DECD62000E4BAA /* GemServerSheetController.m */,
+				647F9F70144BBF88005F13C1 /* GemsetSheetController.h */,
+				647F9F71144BBF88005F13C1 /* GemsetSheetController.m */,
+				6417024E144BBC9B00F7B1F7 /* GemSheetController.h */,
+				6417024F144BBC9B00F7B1F7 /* GemSheetController.m */,
+				64E790FF144E5F8200741803 /* ProgressSheetController.h */,
+				64E79100144E5F8200741803 /* ProgressSheetController.m */,
+				64362A5514DDF7A900B3A89F /* RubyDocSheetController.h */,
+				64362A5614DDF7A900B3A89F /* RubyDocSheetController.m */,
+				64170247144BBC8200F7B1F7 /* RubySheetController.h */,
+				64170248144BBC8200F7B1F7 /* RubySheetController.m */,
+				64B3176114DB7BD500350DC3 /* RvmSheetController.h */,
+				64B3176214DB7BD500350DC3 /* RvmSheetController.m */,
+				64E790F0144E589C00741803 /* Task.h */,
+				64E790F1144E589C00741803 /* Task.m */,
+			);
+			name = controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -311,7 +335,7 @@
 		6451A35B144B2E74003CCFC9 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Lark Software";
 			};
 			buildConfigurationList = 6451A35E144B2E74003CCFC9 /* Build configuration list for PBXProject "Trogon" */;
@@ -510,6 +534,7 @@
 		6451A397144B2E74003CCFC9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Trogon/Trogon-Prefix.pch";
 				INFOPLIST_FILE = "Trogon/Trogon-Info.plist";
@@ -521,6 +546,7 @@
 		6451A398144B2E74003CCFC9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Trogon/Trogon-Prefix.pch";
 				INFOPLIST_FILE = "Trogon/Trogon-Info.plist";
@@ -533,6 +559,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Trogon.app/Contents/MacOS/Trogon";
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Trogon/Trogon-Prefix.pch";
@@ -547,6 +574,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Trogon.app/Contents/MacOS/Trogon";
+				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Trogon/Trogon-Prefix.pch";
