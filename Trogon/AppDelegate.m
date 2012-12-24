@@ -7,9 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "NSString+trimLeadingWhitespace.h"
-#import "NSString+trimTrailingWhitespace.h"
-#import "Task.h"
 
 @implementation AppDelegate
 @synthesize sheetControllerProgress = _sheetControllerProgress;
@@ -17,10 +14,11 @@
 @synthesize sheetControllerRubyDoc = _sheetControllerRubyDoc;
 @synthesize sheetControllerGemServer = _sheetControllerGemServer;
 @synthesize window = _window;
-@synthesize rvms = _rvms;
+@synthesize rubys = _rvms;
 @synthesize gemsets = _gemsets;
 @synthesize gems = _gems;
 @synthesize ruby = _ruby;
+@synthesize taskOutput = _taskOutput;
 
 @synthesize tblRvm = _tblRvm;
 @synthesize tblGemset = _tblGemset;
@@ -36,13 +34,16 @@
         _rvms = [[NSMutableArray alloc] init];
         _gemsets = [[NSMutableArray alloc] init];
         _gems = [[NSMutableArray alloc] init];
+        _taskOutput = [[NSMutableString alloc] init];
+        _isReloadingGemSets = NO;
+        _isReloadingGems = NO;
         
         _ruby = [[Ruby alloc] init];
     }
 
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(addInterpretersNotification:)
-                                                 name:@"TrogonAddRubyInterpreter" 
+                                             selector:@selector(addRubysNotification:)
+                                                 name:@"TrogonAddRuby" 
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addGemsetNotification:)
@@ -83,29 +84,156 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    [self reloadInterpreters];
+    [self reloadRubys];
 }
 
-- (void)addInterpretersNotification:(NSNotification *)notification {
+- (void)setShellWrapper:(AMShellWrapper *)newShellWrapper
+{
+	id old = nil;
+	
+	if (newShellWrapper != shellWrapper) {
+		old = shellWrapper;
+		shellWrapper = newShellWrapper;
+	}
+}
+
+// ============================================================
+// conforming to the AMShellWrapperDelegate protocol:
+// ============================================================
+
+// output from stdout
+- (void)process:(AMShellWrapper *)wrapper appendOutput:(id)output
+{
+    [self.taskOutput appendString:output];
+}
+
+// output from stderr
+- (void)process:(AMShellWrapper *)wrapper appendError:(NSString *)error
+{
+    NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:error forKey:@"NSTaskErrorMessage"];
+    
+    if (errorInfo) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        NSString *errorFromNSTask = [NSString stringWithFormat:@"NSTask Error: %@", [errorInfo valueForKey:@"NSTaskErrorMessage"]];
+        [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
+        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+        
+        NSLog(@"%@", errorFromNSTask);
+        
+        [NSApp presentError:error];
+    }
+}
+
+// This method is a callback which your controller can use to do other initialization
+// when a process is launched.
+- (void)processStarted:(AMShellWrapper *)wrapper
+{
+//	[progressIndicator startAnimation:self];
+}
+
+// This method is a callback which your controller can use to do other cleanup
+// when a process is halted.
+- (void)processFinished:(AMShellWrapper *)wrapper withTerminationStatus:(int)resultCode
+{
+	[self setShellWrapper:nil];
+//	[progressIndicator stopAnimation:self];
+
+    switch (currentState) {
+        case READ_RUBYS:
+            [self readRubyData:self.taskOutput];
+            break;
+        case READ_GEMSETS:
+            [self readGemsetList:self.taskOutput];
+            break;
+        case READ_GEMS:
+            [self readGemList:self.taskOutput];
+            break;
+        case READ_RUBYDOCS:
+            [self readRubyDocs:self.taskOutput];
+            break;
+            
+        default:
+            break;
+    }
+   
+    [self.taskOutput setString:@""];
+}
+
+- (void)processLaunchException:(NSException *)exception
+{
+//	[progressIndicator stopAnimation:self];
+    if (exception) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        NSString *errorFromNSTask = [exception name];
+        [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
+        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+        
+        NSLog(@"%@", errorFromNSTask);
+        
+        [NSApp presentError:error];
+    }
+	[self setShellWrapper:nil];
+}
+
+// ============================================================
+// END conforming to the AMShellWrapperDelegate protocol:
+// ============================================================
+
+-(void)runTask:(NSString *)rvmCmd {
+    AMShellWrapper *wrapper = [[AMShellWrapper alloc] initWithInputPipe:nil
+                                                             outputPipe:nil
+                                                              errorPipe:nil
+                                                       workingDirectory:@"."
+                                                            environment:nil
+                                                              arguments:[NSArray arrayWithObjects:@"/bin/bash", @"-c", rvmCmd, nil]
+                                                                context:NULL];
+    [wrapper setDelegate:self];
+    [self setShellWrapper:wrapper];
+    
+    @try {
+        if (shellWrapper) {
+            [shellWrapper setOutputStringEncoding:NSUTF8StringEncoding];
+            [shellWrapper startProcess];
+        } else {
+            NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:@"Error creating shell wrapper" forKey:@"NSTaskErrorMessage"];
+            
+            if (errorInfo) {
+                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                NSString *errorFromNSTask = [NSString stringWithFormat:@"NSTask Error: %@", [errorInfo valueForKey:@"NSTaskErrorMessage"]];
+                [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
+                NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+                
+                NSLog(@"NSTask Command: %@", rvmCmd);
+                NSLog(@"%@", errorFromNSTask);
+                
+                [NSApp presentError:error];
+            }
+        }
+    }
+    @catch (NSException *localException) {
+        NSLog(@"Caught %@: %@", [localException name], [localException reason]);
+        [self processLaunchException:localException];
+    }
+}
+
+- (void)addRubysNotification:(NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(refreshInterpretersNotification:)
-                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                             selector:@selector(refreshRubysNotification:)
+                                                 name:@"TrogonRefreshRuby"
                                                object:nil];
     
     [_sheetControllerProgress add:self action:@"install_ruby"];
-
+    currentState = READ_RUBYS;    
+    
     Ruby *ruby = [[notification userInfo] objectForKey:@"ruby"];
-
-    NSString *interpreter = [ruby.interpreter stringByTrimmingTrailingWhitespace];
-    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"[" withString:@""];
-    interpreter = [interpreter stringByReplacingOccurrencesOfString:@"]" withString:@""];
+    
+    NSString *rubyName = [ruby.name stringByTrimmingTrailingWhitespace];
+    rubyName = [rubyName stringByReplacingOccurrencesOfString:@"[" withString:@""];
+    rubyName = [rubyName stringByReplacingOccurrencesOfString:@"]" withString:@""];
+    
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm install %@", rvmPath, interpreter];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
-                            object:nil
-                          selector:nil
-                       synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm install %@", rvmPath, rubyName];
+    [self runTask:rvmCmd];
 }
 
 - (void)addGemsetNotification:(NSNotification *)notification {
@@ -119,12 +247,9 @@
     NSString *gemset = [[notification userInfo] objectForKey:@"gemset"];
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset create %@", rvmPath, self.ruby.interpreter, gemset];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
-                            object:nil
-                          selector:nil
-                       synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset create %@", rvmPath, self.ruby.name, gemset];
+    
+    [self runTask:rvmCmd];
 }
 
 - (void)addGemNotification:(NSNotification *)notification {
@@ -139,18 +264,14 @@
     NSString *gem = [[notification userInfo] objectForKey:@"gem"];
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem install %@", rvmPath, self.ruby.interpreter, gemset.name, gem];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
-                            object:nil
-                          selector:nil
-                       synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem install %@", rvmPath, self.ruby.name, gemset.name, gem];
+    [self runTask:rvmCmd];
 }
 
 - (void)addRvmNotification:(NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(refreshGemsNotification:)
-                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                                 name:@"TrogonRefreshRuby"
                                                object:nil];
     
     NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"bash -s stable < <(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer)\" in window 1) activate"];
@@ -181,20 +302,16 @@
     [_sheetControllerProgress add:self action:@"install_ruby_doc"];
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs generate", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
-                            object:nil
-                          selector:nil
-                       synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs generate", rvmPath, self.ruby.name];
+    [self runTask:rvmCmd];
 }
 
-- (void)refreshInterpretersNotification:(NSNotification *)notification {
+- (void)refreshRubysNotification:(NSNotification *)notification {
     [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                    name:@"TrogonRefreshRubyInterpreter" 
+                                                    name:@"TrogonRefreshRuby" 
                                                   object:nil];
     
-    [self reloadInterpreters];
+    [self reloadRubys];
 }
 
 - (void)refreshGemsetsNotification:(NSNotification *)notification {
@@ -221,12 +338,8 @@
     self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                            object:self
-                          selector:@selector(readGemList:)
-                       synchronous:NO];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.name];
+    [self runTask:rvmCmd];
 }
 
 - (void)startGemServer:(NSNotification *)notification {
@@ -240,28 +353,24 @@
     }
         
     self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
-    GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
+    GemSet *aGemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
 
-    _gemServer = [[GemServer alloc] init];
-    [_gemServer launchGemServer:self.ruby.interpreter 
-                         gemset:gemset.name 
-                           port:port];
+    NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem server --port=%@", rvmPath, self.ruby.name, aGemset.name, port];
+    [self runTask:rvmCmd];
 }
 
 - (void)stopGemServer:(NSNotification *)notification {
-    [_gemServer killGemServer];
-    _gemServer = nil;
+    [shellWrapper stopProcess];
 }
 
-- (void)reloadInterpreters {
+- (void)reloadRubys {
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     if ([[NSFileManager defaultManager] fileExistsAtPath:rvmPath]) {
+        currentState = READ_RUBYS;
         NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list", rvmPath];
-        [[Task sharedTask] performTask:@"/bin/bash" 
-                         withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                                object:self
-                              selector:@selector(readInterpreterData:)
-                           synchronous:NO];
+        
+        [self runTask:rvmCmd];
     }
     else {
         NSLog(@"RVM not installed");
@@ -269,44 +378,41 @@
     }
 }
 
--(void)readInterpreterData: (NSString *)output {
-    [self.rvms removeAllObjects];
+-(void)readRubyData: (NSString *)output {
+    [self.rubys removeAllObjects];
     
-    // pull just the ruby interpreters out of the mess we get back
+    // pull just the rubys out of the mess we get back
     for (NSString *line in [output componentsSeparatedByString:@"\n"]) {
         // first line is always "rvm rubies" and we don't want it
         if ([line length] > 0 && [line localizedCompare:@"rvm rubies"] != NSOrderedSame) {
             Ruby *aRvm = [[Ruby alloc] init];
-            NSArray *interpreters = [[line stringByTrimmingLeadingWhitespace] componentsSeparatedByString:@" "];
+            NSArray *rubys = [[line stringByTrimmingLeadingWhitespace] componentsSeparatedByString:@" "];
             
-            if ([interpreters count] > 1) {
+            if ([rubys count] > 1) {
                 /* # => - current */
                 /* # =* - current && default */
                 /* #  * - default */
                 
-                if ([[interpreters objectAtIndex:0] localizedCompare:@"=>"] == NSOrderedSame) {
+                if ([[rubys objectAtIndex:0] localizedCompare:@"=>"] == NSOrderedSame) {
                     // this is the current ruby
-                    aRvm.interpreter = [interpreters objectAtIndex:1];
+                    aRvm.name = [rubys objectAtIndex:1];
                 }
-                else if ([[interpreters objectAtIndex:0] localizedCompare:@"=*"] == NSOrderedSame) {
+                else if ([[rubys objectAtIndex:0] localizedCompare:@"=*"] == NSOrderedSame) {
                     // this is the current and default ruby set
-                    aRvm.interpreter = [interpreters objectAtIndex:1];
+                    aRvm.name = [rubys objectAtIndex:1];
                 }
-                else if ([[interpreters objectAtIndex:0] localizedCompare:@"#"] == NSOrderedSame) {
+                else if ([[rubys objectAtIndex:0] localizedCompare:@"#"] == NSOrderedSame) {
                     continue; // brand new install, no rubies installed
                 }
                 else {
                     // 1 or more rubies installed, none set as default
-                    aRvm.interpreter = [interpreters objectAtIndex:0];
+                    aRvm.name = [rubys objectAtIndex:0];
                 }
-                [self.rvms addObject:aRvm];
-                self.rvms = self.rvms;
+                [self.rubys addObject:aRvm];
+                self.rubys = self.rubys;
             }
         }
     }
-
-    // load the gemset list
-    [self reloadGemsetList];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
@@ -314,8 +420,10 @@
         if ([[self.aryRubyController selectedObjects] count] == 0) {
             return;
         }
-        
-        [self reloadGemsetList];
+
+        if (_isReloadingGemSets == NO) {
+            [self reloadGemsetList];
+        }
     }
 
 	if ([aNotification object] == _tblGemset) {
@@ -323,20 +431,20 @@
             return;
         }
         
-        [self reloadGemList];
+        if (_isReloadingGems == NO) {
+            [self reloadGemList];
+        }
     }
 }
 
 - (void)reloadGemsetList {
+    _isReloadingGemSets = YES;
     self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
 
+    currentState = READ_GEMSETS;
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset list", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                            object:self
-                          selector:@selector(readGemsetList:)
-                       synchronous:NO];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset list", rvmPath, self.ruby.name];
+    [self runTask:rvmCmd];
 }
 
 - (void)readGemsetList: (NSString *)output {
@@ -370,10 +478,11 @@
         self.gemsets = self.gemsets;
     }
     
-    [self reloadGemList];
+    _isReloadingGemSets = NO;
 }
 
 - (void)reloadGemList {
+    _isReloadingGems = YES;
     if ([[self.aryGemSetsController selectedObjects] count] == 0) {
         return;
     }
@@ -382,13 +491,10 @@
 
     [self.tblGem reloadData];
 
+    currentState = READ_GEMS;
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem list", rvmPath, self.ruby.interpreter, gemset.name];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                            object:self
-                          selector:@selector(readGemList:)
-                       synchronous:NO];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem list", rvmPath, self.ruby.name, gemset.name];
+    [self runTask:rvmCmd];
 }
 
 - (void)readGemList:(NSString *)output {
@@ -402,11 +508,6 @@
         }
         if ([line hasPrefix:@"Using"]) {
             continue;
-//            Gem *aGem = [[Gem alloc] init];
-//            aGem.name = @"No gems for this gemset";
-//            [self.gems addObject:aGem];
-//            self.gems = self.gems;
-//            continue;
         }
         
         Gem *aGem = [[Gem alloc] init];
@@ -422,7 +523,7 @@
         [self.gems addObject:aGem];
         self.gems = self.gems;
     }
-
+    _isReloadingGems = NO;
 }
 
 - (void)readRubyDocs:(NSString *)output {
@@ -431,24 +532,21 @@
     }
 }
 
-- (IBAction)btnRemoveInterpreter:(id)sender {
+- (IBAction)btnRemoveRuby:(id)sender {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(refreshInterpretersNotification:)
-                                                 name:@"TrogonRefreshRubyInterpreter" 
+                                             selector:@selector(refreshRubysNotification:)
+                                                 name:@"TrogonRefreshRuby"
                                                object:nil];
 
     [_sheetControllerProgress add:self action:@"uninstall_ruby"];
     
     Ruby *rvm = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     
-    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
+    currentState = NO_HANDLER;
+    NSString *ruby = [rvm.name stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm remove %@ --archive", rvmPath, interpreter];
-    (void)[[Task sharedTask] performTask:@"/bin/bash" 
-                           withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                                  object:nil
-                                selector:nil
-                             synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm remove %@ --archive", rvmPath, ruby];
+    [self runTask:rvmCmd];
 }
 
 - (IBAction)btnRemoveGemset:(id)sender {
@@ -461,13 +559,10 @@
 
     GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
 
+    currentState = NO_HANDLER;
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm --force gemset delete %@", rvmPath, self.ruby.interpreter, gemset.name];
-    (void)[[Task sharedTask] performTask:@"/bin/bash" 
-                           withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                                  object:nil
-                                selector:nil
-                             synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm --force gemset delete %@", rvmPath, self.ruby.name, gemset.name];
+    [self runTask:rvmCmd];
 }
 
 - (IBAction)btnRemoveGem:(id)sender {
@@ -481,13 +576,10 @@
     GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
     Gem *gem = [[self.aryGemsController selectedObjects] objectAtIndex:0];
     
+    currentState = NO_HANDLER;
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem uninstall %@", rvmPath, self.ruby.interpreter, gemset.name, gem.nameWithoutVersion];
-    (void)[[Task sharedTask] performTask:@"/bin/bash" 
-                           withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                                  object:nil
-                                selector:nil
-                             synchronous:YES];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm gemset use %@ && gem uninstall %@", rvmPath, self.ruby.name, gemset.name, gem.nameWithoutVersion];
+    [self runTask:rvmCmd];
 }
 
 - (IBAction)btnLaunchTerminal:(id)sender {
@@ -531,15 +623,12 @@
             self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
             GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
 
-            NSString *interpreter = [self.ruby.interpreter stringByTrimmingTrailingWhitespace];
+            NSString *ruby = [self.ruby.name stringByTrimmingTrailingWhitespace];
             
+            currentState = NO_HANDLER;
             NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-            NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && cd %@ && rvm --rvmrc --create %@@%@", rvmPath, [pathToFile path], interpreter, gemset.name];
-            (void)[[Task sharedTask] performTask:@"/bin/bash" 
-                                   withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                                          object:nil
-                                        selector:nil
-                                     synchronous:YES];
+            NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && cd %@ && rvm --rvmrc --create %@@%@", rvmPath, [pathToFile path], ruby, gemset.name];
+            [self runTask:rvmCmd];
 
             [self performSelectorOnMainThread:@selector(rvmrcInstalled:)
                                    withObject:pathToFile 
@@ -569,13 +658,10 @@
                                                  name:@"TrogonAddRubyDoc" 
                                                object:nil];
     
+    currentState = READ_RUBYDOCS;
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.interpreter];
-    [[Task sharedTask] performTask:@"/bin/bash" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil]
-                            object:self
-                          selector:@selector(readRubyDocs:)
-                       synchronous:NO];
+    NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm %@ && rvm docs open", rvmPath, self.ruby.name];
+    [self runTask:rvmCmd];
 }
 
 - (IBAction)btnLaunchGemServer:(id)sender {
@@ -589,7 +675,7 @@
     self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
 
-    [_sheetControllerGemServer add:self ruby:self.ruby.interpreter gem:gemset.name];
+    [_sheetControllerGemServer add:self ruby:self.ruby.name gem:gemset.name];
 }
 
 - (void)rvmrcInstalled:(NSURL *)pathToFile {
@@ -630,9 +716,9 @@
     Ruby *rvm = [[self.aryRubyController selectedObjects] objectAtIndex:0];
     GemSet *gemset = [[self.aryGemSetsController selectedObjects] objectAtIndex:0];
     
-    NSString *interpreter = [rvm.interpreter stringByTrimmingTrailingWhitespace];
+    NSString *ruby = [rvm.name stringByTrimmingTrailingWhitespace];
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
-    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"source %@ && rvm %@ && rvm gemset use %@\" in window 1) activate", rvmPath, interpreter, gemset.name];
+    NSString *rvmCmd = [NSString stringWithFormat:@"tell application \"Terminal\" to (do script \"source %@ && rvm %@ && rvm gemset use %@\" in window 1) activate", rvmPath, ruby, gemset.name];
     
     NSDictionary *errorInfo;
     NSAppleScript *scriptObject = [[NSAppleScript alloc] initWithSource:rvmCmd];

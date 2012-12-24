@@ -9,6 +9,6 @@
 #import "Ruby.h"
 
 @implementation Ruby
-@synthesize interpreter = _interpreter;
+@synthesize name = _name;
 
 @end

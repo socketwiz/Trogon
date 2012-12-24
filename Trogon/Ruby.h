@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface Ruby : NSObject {
-    NSString *_interpreter;
+    NSString *_name;
 }
-@property (retain,readwrite) NSString *interpreter;
+@property (retain,readwrite) NSString *name;
 
 @end

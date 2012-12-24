@@ -8,20 +8,24 @@
 
 #import <Foundation/Foundation.h>
 #import "Ruby.h"
+#import "AMShellWrapper.h"
 
-@interface RubySheetController : NSObject {
+@interface RubySheetController : NSObject <AMShellWrapperDelegate> {
     NSView *documentWindow;
     NSPanel *objectSheet;
-    NSMutableString *_outputInterpreter;
+    NSMutableString *_outputRuby;
+    AMShellWrapper *shellWrapper;
     
-    NSMutableArray *_interpreters;
+    NSMutableArray *_rubys;
     __weak NSArrayController *aryRvmsController;
 }
 @property (nonatomic, retain) IBOutlet NSView *documentWindow;
 @property (nonatomic, retain) IBOutlet NSPanel *objectSheet;
-@property (retain,readwrite) NSMutableArray *interpreters;
+@property (retain,readwrite) NSMutableArray *rubys;
 @property (weak) IBOutlet NSArrayController *aryRvmsController;
-@property (retain, readwrite) NSMutableString *outputInterpreter;
+@property (retain, readwrite) NSMutableString *outputRuby;
+@property (retain, readwrite) NSMutableString *taskOutput;
+
 
 - (IBAction)add:(id)sender;
 - (IBAction)cancel:(id)sender;

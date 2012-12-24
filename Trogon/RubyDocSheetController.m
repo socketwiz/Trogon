@@ -7,7 +7,6 @@
 //
 
 #import "RubyDocSheetController.h"
-#import "Task.h"
 
 @implementation RubyDocSheetController
 @synthesize documentWindow;

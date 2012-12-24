@@ -8,26 +8,139 @@
 
 #import "RubySheetController.h"
 #import "NSString+trimTrailingWhitespace.h"
-#import "Task.h"
 
 @implementation RubySheetController
 @synthesize aryRvmsController;
 @synthesize documentWindow;
 @synthesize objectSheet;
-@synthesize interpreters = _interpreters;
-@synthesize outputInterpreter = _outputInterpreter;
+@synthesize rubys = _rubys;
+@synthesize outputRuby = _outputRuby;
+@synthesize taskOutput = _taskOutput;
 
 
--(void)readAvailableInterpreters: (NSString *)output {
-    [self.outputInterpreter appendString:output];
+- (void)setShellWrapper:(AMShellWrapper *)newShellWrapper
+{
+	id old = nil;
+	
+	if (newShellWrapper != shellWrapper) {
+		old = shellWrapper;
+		shellWrapper = newShellWrapper;
+	}
+}
+
+// ============================================================
+// conforming to the AMShellWrapperDelegate protocol:
+// ============================================================
+
+// output from stdout
+- (void)process:(AMShellWrapper *)wrapper appendOutput:(id)output
+{
+    [self.taskOutput appendString:output];
+}
+
+// output from stderr
+- (void)process:(AMShellWrapper *)wrapper appendError:(NSString *)error
+{
+    NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:error forKey:@"NSTaskErrorMessage"];
     
-    // pull just the ruby interpreters out of the mess we get back
-    for (NSString *line in [self.outputInterpreter componentsSeparatedByString:@"\n"]) {
+    if (errorInfo) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        NSString *errorFromNSTask = [NSString stringWithFormat:@"NSTask Error: %@", [errorInfo valueForKey:@"NSTaskErrorMessage"]];
+        [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
+        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+        
+        NSLog(@"%@", errorFromNSTask);
+        
+        [NSApp presentError:error];
+    }
+}
+
+// This method is a callback which your controller can use to do other initialization
+// when a process is launched.
+- (void)processStarted:(AMShellWrapper *)wrapper
+{
+    //	[progressIndicator startAnimation:self];
+}
+
+// This method is a callback which your controller can use to do other cleanup
+// when a process is halted.
+- (void)processFinished:(AMShellWrapper *)wrapper withTerminationStatus:(int)resultCode
+{
+	[self setShellWrapper:nil];
+    //	[progressIndicator stopAnimation:self];
+    
+    [self readAvailableRubys:self.taskOutput];
+    
+    [self.taskOutput setString:@""];
+}
+
+- (void)processLaunchException:(NSException *)exception
+{
+    //	[progressIndicator stopAnimation:self];
+    if (exception) {
+        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+        NSString *errorFromNSTask = [exception name];
+        [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
+        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+        
+        NSLog(@"%@", errorFromNSTask);
+        
+        [NSApp presentError:error];
+    }
+	[self setShellWrapper:nil];
+}
+
+// ============================================================
+// END conforming to the AMShellWrapperDelegate protocol:
+// ============================================================
+
+-(void)runTask:(NSString *)rvmCmd {
+    AMShellWrapper *wrapper = [[AMShellWrapper alloc] initWithInputPipe:nil
+                                                             outputPipe:nil
+                                                              errorPipe:nil
+                                                       workingDirectory:@"."
+                                                            environment:nil
+                                                              arguments:[NSArray arrayWithObjects:@"/bin/bash", @"-c", rvmCmd, nil]
+                                                                context:NULL];
+    [wrapper setDelegate:self];
+    [self setShellWrapper:wrapper];
+    
+    @try {
+        if (shellWrapper) {
+            [shellWrapper setOutputStringEncoding:NSUTF8StringEncoding];
+            [shellWrapper startProcess];
+        } else {
+            NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:@"Error creating shell wrapper" forKey:@"NSTaskErrorMessage"];
+            
+            if (errorInfo) {
+                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
+                NSString *errorFromNSTask = [NSString stringWithFormat:@"NSTask Error: %@", [errorInfo valueForKey:@"NSTaskErrorMessage"]];
+                [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
+                NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
+                
+                NSLog(@"NSTask Command: %@", rvmCmd);
+                NSLog(@"%@", errorFromNSTask);
+                
+                [NSApp presentError:error];
+            }
+        }
+    }
+    @catch (NSException *localException) {
+        NSLog(@"Caught %@: %@", [localException name], [localException reason]);
+        [self processLaunchException:localException];
+    }
+}
+
+-(void)readAvailableRubys: (NSString *)output {
+    [self.outputRuby appendString:output];
+    
+    // pull just the rubys out of the mess we get back
+    for (NSString *line in [self.outputRuby componentsSeparatedByString:@"\n"]) {
         if ([line length] > 0 && ![line hasPrefix:@"#"]) {
-            Ruby *aRvm = [[Ruby alloc] init];
-            aRvm.interpreter = line;
-            [_interpreters addObject:aRvm];
-            self.interpreters = _interpreters;
+            Ruby *aRuby = [[Ruby alloc] init];
+            aRuby.name = line;
+            [_rubys addObject:aRuby];
+            self.rubys = _rubys;
         }
     }
 }
@@ -35,8 +148,9 @@
 - (id)init {
     self = [super init];
     if (self) {
-        _interpreters = [[NSMutableArray alloc] init];
-        _outputInterpreter = [[NSMutableString alloc] init];
+        _rubys = [[NSMutableArray alloc] init];
+        _outputRuby = [[NSMutableString alloc] init];
+        _taskOutput = [[NSMutableString alloc] init];
     }
     return self;
 }
@@ -61,11 +175,7 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list known", rvmPath];
-    [[Task sharedTask] performTask:@"/bin/sh" 
-                     withArguments:[NSArray arrayWithObjects:@"-c", rvmCmd, nil] 
-                            object:self
-                          selector:@selector(readAvailableInterpreters:)
-                       synchronous:NO];
+    [self runTask:rvmCmd];
     
     [NSApp beginSheet:objectSheet
        modalForWindow:[documentWindow window]
@@ -97,7 +207,7 @@
         [objectSheet orderOut:self];
 
         // send it to the AppDelegate so we can display a progress sheet
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonAddRubyInterpreter" 
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonAddRuby"
                                                             object:self
                                                           userInfo:info];        
     }

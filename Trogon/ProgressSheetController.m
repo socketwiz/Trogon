@@ -132,13 +132,13 @@
         [progressWheel setHidden:YES];
 
         if ([self.action localizedCompare:@"install_ruby"] == NSOrderedSame) {            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRuby"
                                                                 object:self
                                                               userInfo:nil];
             [self.lblProgress setStringValue:@"Ruby Installation Complete"];
         }
         if ([self.action localizedCompare:@"uninstall_ruby"] == NSOrderedSame) {            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRubyInterpreter" 
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRefreshRuby" 
                                                                 object:self
                                                               userInfo:nil];
             [self.lblProgress setStringValue:@"Ruby Uninstall Complete"];

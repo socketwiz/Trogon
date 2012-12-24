@@ -14,31 +14,33 @@
 #import "RvmSheetController.h"
 #import "RubyDocSheetController.h"
 #import "GemServerSheetController.h"
-#import "GemServer.h"
+#import "NSString+trimLeadingWhitespace.h"
+#import "NSString+trimTrailingWhitespace.h"
+#import "AMShellWrapper.h"
 
+enum STATES {
+    NO_HANDLER,
+    READ_RUBYS,
+    READ_GEMSETS,
+    READ_GEMS,
+    READ_RUBYDOCS
+};
 
-@interface AppDelegate : NSObject <NSApplicationDelegate> {
-    NSMutableArray *_rvms;
-    NSMutableArray *_gemsets;
-    NSMutableArray *_gems;
-    
+@interface AppDelegate : NSObject <AMShellWrapperDelegate, NSApplicationDelegate> {
+    AMShellWrapper *shellWrapper;
     Ruby *_ruby;
-    GemServer *_gemServer;
+    BOOL _isReloadingGemSets;
+    BOOL _isReloadingGems;
     
-    __weak NSTableView *_tblRvm;
-    __weak NSTableView *_tblGemset;
-    __weak NSTableView *_tblGem;
-    __weak NSArrayController *_aryRubyController;
-    __weak NSArrayController *_aryGemSetsController;
-    __weak NSArrayController *_aryGemsController;
-    __weak ProgressSheetController *_sheetControllerProgress;
+    int currentState;
 }
 
 @property (assign) IBOutlet NSWindow *window;
-@property (retain, readwrite) NSMutableArray *rvms;
+@property (retain, readwrite) NSMutableArray *rubys;
 @property (retain, readwrite) NSMutableArray *gemsets;
 @property (retain, readwrite) NSMutableArray *gems;
 @property (retain, readwrite) Ruby *ruby;
+@property (retain, readwrite) NSMutableString *taskOutput;
 
 @property (weak) IBOutlet NSTableView *tblRvm;
 @property (weak) IBOutlet NSTableView *tblGemset;
@@ -52,7 +54,7 @@
 @property (weak) IBOutlet RubyDocSheetController *sheetControllerRubyDoc;
 @property (weak) IBOutlet GemServerSheetController *sheetControllerGemServer;
 
-- (IBAction)btnRemoveInterpreter:(id)sender;
+- (IBAction)btnRemoveRuby:(id)sender;
 - (IBAction)btnRemoveGemset:(id)sender;
 - (IBAction)btnRemoveGem:(id)sender;
 
@@ -61,7 +63,7 @@
 - (IBAction)btnLaunchRubyDocs:(id)sender;
 - (IBAction)btnLaunchGemServer:(id)sender;
 
-- (void)reloadInterpreters;
+- (void)reloadRubys;
 - (void)reloadGemsetList;
 - (void)reloadGemList;
 

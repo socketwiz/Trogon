@@ -18,7 +18,6 @@
 		641C276D14DECD62000E4BAA /* GemServerSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 641C276C14DECD62000E4BAA /* GemServerSheetController.m */; };
 		64362A5414DDF77D00B3A89F /* RubyDocSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64362A5314DDF77D00B3A89F /* RubyDocSheet.xib */; };
 		64362A5714DDF7A900B3A89F /* RubyDocSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64362A5614DDF7A900B3A89F /* RubyDocSheetController.m */; };
-		64362A5A14DE507F00B3A89F /* GemServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 64362A5914DE507F00B3A89F /* GemServer.m */; };
 		6451A369144B2E74003CCFC9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6451A368144B2E74003CCFC9 /* Cocoa.framework */; };
 		6451A373144B2E74003CCFC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6451A371144B2E74003CCFC9 /* InfoPlist.strings */; };
 		6451A375144B2E74003CCFC9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A374144B2E74003CCFC9 /* main.m */; };
@@ -30,6 +29,7 @@
 		6451A390144B2E74003CCFC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6451A38E144B2E74003CCFC9 /* InfoPlist.strings */; };
 		6451A393144B2E74003CCFC9 /* TrogonTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A392144B2E74003CCFC9 /* TrogonTests.m */; };
 		6451A39E144B2F01003CCFC9 /* Ruby.m in Sources */ = {isa = PBXBuildFile; fileRef = 6451A39D144B2F01003CCFC9 /* Ruby.m */; };
+		6460CB8016869A9600D5D54B /* AMShellWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6460CB7F16869A9600D5D54B /* AMShellWrapper.m */; };
 		64745954147202820004698B /* GemsetTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 64745953147202820004698B /* GemsetTableView.m */; };
 		647F9F6D144BBD81005F13C1 /* GemsetSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 647F9F6C144BBD81005F13C1 /* GemsetSheet.xib */; };
 		647F9F6F144BBD8E005F13C1 /* GemSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 647F9F6E144BBD8E005F13C1 /* GemSheet.xib */; };
@@ -41,7 +41,6 @@
 		64B3176014DB7BA800350DC3 /* RvmSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64B3175F14DB7BA800350DC3 /* RvmSheet.xib */; };
 		64B3176314DB7BD500350DC3 /* RvmSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64B3176214DB7BD500350DC3 /* RvmSheetController.m */; };
 		64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */; };
-		64E790F2144E589C00741803 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E790F1144E589C00741803 /* Task.m */; };
 		64E790FD144E5F7000741803 /* ProgressSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64E790FC144E5F7000741803 /* ProgressSheet.xib */; };
 		64E79101144E5F8200741803 /* ProgressSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E79100144E5F8200741803 /* ProgressSheetController.m */; };
 /* End PBXBuildFile section */
@@ -72,8 +71,6 @@
 		64362A5314DDF77D00B3A89F /* RubyDocSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = RubyDocSheet.xib; path = ../RubyDocSheet.xib; sourceTree = "<group>"; };
 		64362A5514DDF7A900B3A89F /* RubyDocSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyDocSheetController.h; sourceTree = "<group>"; };
 		64362A5614DDF7A900B3A89F /* RubyDocSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyDocSheetController.m; sourceTree = "<group>"; };
-		64362A5814DE507F00B3A89F /* GemServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GemServer.h; sourceTree = "<group>"; };
-		64362A5914DE507F00B3A89F /* GemServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GemServer.m; sourceTree = "<group>"; };
 		6451A364144B2E74003CCFC9 /* Trogon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trogon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6451A368144B2E74003CCFC9 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		6451A36B144B2E74003CCFC9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -95,6 +92,8 @@
 		6451A392144B2E74003CCFC9 /* TrogonTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrogonTests.m; sourceTree = "<group>"; };
 		6451A39C144B2F01003CCFC9 /* Ruby.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ruby.h; sourceTree = "<group>"; };
 		6451A39D144B2F01003CCFC9 /* Ruby.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ruby.m; sourceTree = "<group>"; };
+		6460CB7E16869A9600D5D54B /* AMShellWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMShellWrapper.h; sourceTree = "<group>"; };
+		6460CB7F16869A9600D5D54B /* AMShellWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMShellWrapper.m; sourceTree = "<group>"; };
 		64745952147202820004698B /* GemsetTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GemsetTableView.h; sourceTree = "<group>"; };
 		64745953147202820004698B /* GemsetTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GemsetTableView.m; sourceTree = "<group>"; };
 		647F9F6C144BBD81005F13C1 /* GemsetSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GemsetSheet.xib; sourceTree = "<group>"; };
@@ -114,8 +113,6 @@
 		64B3176214DB7BD500350DC3 /* RvmSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RvmSheetController.m; sourceTree = "<group>"; };
 		64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+trimTrailingWhitespace.h"; sourceTree = "<group>"; };
 		64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+trimTrailingWhitespace.m"; sourceTree = "<group>"; };
-		64E790F0144E589C00741803 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
-		64E790F1144E589C00741803 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
 		64E790FC144E5F7000741803 /* ProgressSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressSheet.xib; sourceTree = "<group>"; };
 		64E790FF144E5F8200741803 /* ProgressSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressSheetController.h; sourceTree = "<group>"; };
 		64E79100144E5F8200741803 /* ProgressSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressSheetController.m; sourceTree = "<group>"; };
@@ -266,10 +263,10 @@
 		64C7757C15BC905F00611D74 /* controller */ = {
 			isa = PBXGroup;
 			children = (
+				6460CB7E16869A9600D5D54B /* AMShellWrapper.h */,
+				6460CB7F16869A9600D5D54B /* AMShellWrapper.m */,
 				6451A37A144B2E74003CCFC9 /* AppDelegate.h */,
 				6451A37B144B2E74003CCFC9 /* AppDelegate.m */,
-				64362A5814DE507F00B3A89F /* GemServer.h */,
-				64362A5914DE507F00B3A89F /* GemServer.m */,
 				641C276B14DECD62000E4BAA /* GemServerSheetController.h */,
 				641C276C14DECD62000E4BAA /* GemServerSheetController.m */,
 				647F9F70144BBF88005F13C1 /* GemsetSheetController.h */,
@@ -284,8 +281,6 @@
 				64170248144BBC8200F7B1F7 /* RubySheetController.m */,
 				64B3176114DB7BD500350DC3 /* RvmSheetController.h */,
 				64B3176214DB7BD500350DC3 /* RvmSheetController.m */,
-				64E790F0144E589C00741803 /* Task.h */,
-				64E790F1144E589C00741803 /* Task.m */,
 			);
 			name = controller;
 			sourceTree = "<group>";
@@ -420,13 +415,12 @@
 				64170250144BBC9B00F7B1F7 /* GemSheetController.m in Sources */,
 				647F9F72144BBF88005F13C1 /* GemsetSheetController.m in Sources */,
 				64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */,
-				64E790F2144E589C00741803 /* Task.m in Sources */,
 				64E79101144E5F8200741803 /* ProgressSheetController.m in Sources */,
 				64745954147202820004698B /* GemsetTableView.m in Sources */,
 				64B3176314DB7BD500350DC3 /* RvmSheetController.m in Sources */,
 				64362A5714DDF7A900B3A89F /* RubyDocSheetController.m in Sources */,
-				64362A5A14DE507F00B3A89F /* GemServer.m in Sources */,
 				641C276D14DECD62000E4BAA /* GemServerSheetController.m in Sources */,
+				6460CB8016869A9600D5D54B /* AMShellWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

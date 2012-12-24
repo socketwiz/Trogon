@@ -45,11 +45,6 @@
         }
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(readGemServerOutput:)
-                                                 name:NSFileHandleDataAvailableNotification 
-                                               object:nil];
-    
     [self.txtViewGemServerOutput setEditable:YES];
     [self.txtViewGemServerOutput setString:@""];
     [self.txtViewGemServerOutput setEditable:NO];
@@ -98,26 +93,10 @@
                                                       userInfo:data];
 }
 
--(void)readGemServerOutput: (NSNotification *)notification {
-    NSData *data;
-    NSString *text;
-    
-    data = [[notification object] availableData];
-    text = [[NSString alloc] initWithData:data 
-                                 encoding:NSASCIIStringEncoding];
-    
+-(void)readGemServerOutput: (NSString *)output {
     [self.txtViewGemServerOutput setEditable:YES];
-    [self.txtViewGemServerOutput insertText:text];
+    [self.txtViewGemServerOutput insertText:output];
     [self.txtViewGemServerOutput setEditable:NO];
-    
-    if([data length]) {
-        [[notification object] waitForDataInBackgroundAndNotify];
-    }
-    else {
-        [[NSNotificationCenter defaultCenter] removeObserver:self 
-                                                        name:NSFileHandleDataAvailableNotification 
-                                                      object:nil];
-    }
 }
 
 - (IBAction)stopGemServer:(id)sender {
