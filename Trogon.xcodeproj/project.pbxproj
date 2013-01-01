@@ -19,7 +19,6 @@
 		64232A291691F15B008479FF /* trogon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 64232A281691F15B008479FF /* trogon.icns */; };
 		64232A5F1691F8FA008479FF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64232A3A1691F672008479FF /* Foundation.framework */; };
 		64232A621691F8FA008479FF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 64232A611691F8FA008479FF /* main.m */; };
-		64232A661691F8FA008479FF /* TrogonHelper.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 64232A651691F8FA008479FF /* TrogonHelper.1 */; };
 		6424C0CB169205EF00C13F15 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6424C0CA169205EF00C13F15 /* Security.framework */; };
 		6424C0CE169205F900C13F15 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6424C0CD169205F900C13F15 /* ServiceManagement.framework */; };
 		6424C0D016920EA400C13F15 /* com.lark.software.TrogonHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = 64232A5D1691F8FA008479FF /* com.lark.software.TrogonHelper */; };
@@ -75,7 +74,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				64232A661691F8FA008479FF /* TrogonHelper.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -109,7 +107,6 @@
 		64232A5D1691F8FA008479FF /* com.lark.software.TrogonHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.lark.software.TrogonHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		64232A611691F8FA008479FF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		64232A641691F8FA008479FF /* TrogonHelper-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TrogonHelper-Prefix.pch"; sourceTree = "<group>"; };
-		64232A651691F8FA008479FF /* TrogonHelper.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = TrogonHelper.1; sourceTree = "<group>"; };
 		64232A6F1691F964008479FF /* TrogonHelper-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TrogonHelper-Info.plist"; sourceTree = "<group>"; };
 		64232A711691F981008479FF /* TrogonHelper-Launchd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TrogonHelper-Launchd.plist"; sourceTree = "<group>"; };
 		6424C0CA169205EF00C13F15 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -201,7 +198,6 @@
 				64232A711691F981008479FF /* TrogonHelper-Launchd.plist */,
 				64232A611691F8FA008479FF /* main.m */,
 				64232A631691F8FA008479FF /* Supporting Files */,
-				64232A651691F8FA008479FF /* TrogonHelper.1 */,
 			);
 			path = TrogonHelper;
 			sourceTree = "<group>";
@@ -617,6 +613,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -646,6 +643,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -675,6 +673,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
 			};
 			name = Debug;
 		};
@@ -697,6 +696,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
 			};
 			name = Release;
 		};
@@ -719,6 +719,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Trogon/Trogon-Prefix.pch";
 				INFOPLIST_FILE = "Trogon/Trogon-Info.plist";
