@@ -66,6 +66,8 @@
 	return self;
 }
 
+// tear things down
+
 - (id)delegate
 {
 	return delegate;
@@ -189,10 +191,16 @@
 		// data and we'll never get anywhere. So we have to keep reading data from the file
 		// handle as we go.
 		if (stdoutPipe == nil) // we have to handle this ourselves:
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData:) name:NSFileHandleReadCompletionNotification object:stdoutHandle];
+			[[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(getData:)
+                                                         name:NSFileHandleReadCompletionNotification
+                                                       object:stdoutHandle];
 		
 		if (stderrPipe == nil) // we have to handle this ourselves:
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getData:) name:NSFileHandleReadCompletionNotification object:stderrHandle];
+			[[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(getData:)
+                                                         name:NSFileHandleReadCompletionNotification
+                                                       object:stderrHandle];
 		
 		// We tell the file handle to go ahead and read in the background asynchronously,
 		// and notify us via the callback registered above when we signed up as an observer.
@@ -205,8 +213,7 @@
 		// deciding wether the task has died, we go the 'clean' route and wait for a notification
 		[[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(taskStopped:)
-                                                     name:NSTaskDidTerminateNotification
-                                                   object:task];
+                                                     name:NSTaskDidTerminateNotification object:task];
 		
 		// we will wait for data in stdout; there may be nothing to receive from stderr
 		stdoutEmpty = NO;
@@ -214,6 +221,9 @@
 		
 		// launch the task asynchronously
 		[task launch];
+		
+		// since the notification center does not retain the observer, make sure
+		// we don't get deallocated early
 	} else {
 		[self performSelector:@selector(cleanup) withObject:nil afterDelay:0];
 	}
@@ -274,6 +284,8 @@
 	*/
 	
 	delegate = nil;
+
+	// we are done; go ahead and kill us if you like ...
 }
 
 // input to stdin
