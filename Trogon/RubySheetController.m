@@ -20,10 +20,7 @@
 
 - (void)setShellWrapper:(AMShellWrapper *)newShellWrapper
 {
-	id old = nil;
-	
 	if (newShellWrapper != shellWrapper) {
-		old = shellWrapper;
 		shellWrapper = newShellWrapper;
 	}
 }

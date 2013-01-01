@@ -17,6 +17,12 @@
 		641C276D14DECD62000E4BAA /* GemServerSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 641C276C14DECD62000E4BAA /* GemServerSheetController.m */; };
 		64232A271691F0A1008479FF /* RubyDocSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64232A261691F0A1008479FF /* RubyDocSheet.xib */; };
 		64232A291691F15B008479FF /* trogon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 64232A281691F15B008479FF /* trogon.icns */; };
+		64232A5F1691F8FA008479FF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64232A3A1691F672008479FF /* Foundation.framework */; };
+		64232A621691F8FA008479FF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 64232A611691F8FA008479FF /* main.m */; };
+		64232A661691F8FA008479FF /* TrogonHelper.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 64232A651691F8FA008479FF /* TrogonHelper.1 */; };
+		6424C0CB169205EF00C13F15 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6424C0CA169205EF00C13F15 /* Security.framework */; };
+		6424C0CE169205F900C13F15 /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6424C0CD169205F900C13F15 /* ServiceManagement.framework */; };
+		6424C0D016920EA400C13F15 /* com.lark.software.TrogonHelper in CopyFiles */ = {isa = PBXBuildFile; fileRef = 64232A5D1691F8FA008479FF /* com.lark.software.TrogonHelper */; };
 		64362A5714DDF7A900B3A89F /* RubyDocSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64362A5614DDF7A900B3A89F /* RubyDocSheetController.m */; };
 		6451A369144B2E74003CCFC9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6451A368144B2E74003CCFC9 /* Cocoa.framework */; };
 		6451A373144B2E74003CCFC9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6451A371144B2E74003CCFC9 /* InfoPlist.strings */; };
@@ -53,7 +59,37 @@
 			remoteGlobalIDString = 6451A363144B2E74003CCFC9;
 			remoteInfo = Trogon;
 		};
+		64945BE0169338C400C009D7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6451A35B144B2E74003CCFC9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 64232A5C1691F8FA008479FF;
+			remoteInfo = com.lark.software.TrogonHelper;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		64232A5B1691F8FA008479FF /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				64232A661691F8FA008479FF /* TrogonHelper.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		6424C0CF16920E8100C13F15 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/LaunchServices;
+			dstSubfolderSpec = 1;
+			files = (
+				6424C0D016920EA400C13F15 /* com.lark.software.TrogonHelper in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		64072FAA14DD784300B78DD8 /* terminal.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = terminal.icns; sourceTree = "<group>"; };
@@ -69,6 +105,15 @@
 		641C276C14DECD62000E4BAA /* GemServerSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GemServerSheetController.m; sourceTree = "<group>"; };
 		64232A261691F0A1008479FF /* RubyDocSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RubyDocSheet.xib; sourceTree = "<group>"; };
 		64232A281691F15B008479FF /* trogon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trogon.icns; sourceTree = "<group>"; };
+		64232A3A1691F672008479FF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		64232A5D1691F8FA008479FF /* com.lark.software.TrogonHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.lark.software.TrogonHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		64232A611691F8FA008479FF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		64232A641691F8FA008479FF /* TrogonHelper-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TrogonHelper-Prefix.pch"; sourceTree = "<group>"; };
+		64232A651691F8FA008479FF /* TrogonHelper.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = TrogonHelper.1; sourceTree = "<group>"; };
+		64232A6F1691F964008479FF /* TrogonHelper-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TrogonHelper-Info.plist"; sourceTree = "<group>"; };
+		64232A711691F981008479FF /* TrogonHelper-Launchd.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "TrogonHelper-Launchd.plist"; sourceTree = "<group>"; };
+		6424C0CA169205EF00C13F15 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		6424C0CD169205F900C13F15 /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
 		64362A5514DDF7A900B3A89F /* RubyDocSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyDocSheetController.h; sourceTree = "<group>"; };
 		64362A5614DDF7A900B3A89F /* RubyDocSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RubyDocSheetController.m; sourceTree = "<group>"; };
 		6451A364144B2E74003CCFC9 /* Trogon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Trogon.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,11 +164,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		64232A5A1691F8FA008479FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64232A5F1691F8FA008479FF /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6451A361144B2E74003CCFC9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				6451A369144B2E74003CCFC9 /* Cocoa.framework in Frameworks */,
+				6424C0CB169205EF00C13F15 /* Security.framework in Frameworks */,
+				6424C0CE169205F900C13F15 /* ServiceManagement.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,13 +194,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		64232A601691F8FA008479FF /* TrogonHelper */ = {
+			isa = PBXGroup;
+			children = (
+				64232A6F1691F964008479FF /* TrogonHelper-Info.plist */,
+				64232A711691F981008479FF /* TrogonHelper-Launchd.plist */,
+				64232A611691F8FA008479FF /* main.m */,
+				64232A631691F8FA008479FF /* Supporting Files */,
+				64232A651691F8FA008479FF /* TrogonHelper.1 */,
+			);
+			path = TrogonHelper;
+			sourceTree = "<group>";
+		};
+		64232A631691F8FA008479FF /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				64232A641691F8FA008479FF /* TrogonHelper-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		6451A359144B2E74003CCFC9 = {
 			isa = PBXGroup;
 			children = (
-				6451A36E144B2E74003CCFC9 /* Trogon */,
-				6451A38B144B2E74003CCFC9 /* TrogonTests */,
+				64232A601691F8FA008479FF /* TrogonHelper */,
 				6451A367144B2E74003CCFC9 /* Frameworks */,
 				6451A365144B2E74003CCFC9 /* Products */,
+				6451A36E144B2E74003CCFC9 /* Trogon */,
+				6451A38B144B2E74003CCFC9 /* TrogonTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -154,6 +230,7 @@
 			children = (
 				6451A364144B2E74003CCFC9 /* Trogon.app */,
 				6451A385144B2E74003CCFC9 /* TrogonTests.octest */,
+				64232A5D1691F8FA008479FF /* com.lark.software.TrogonHelper */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -161,8 +238,11 @@
 		6451A367144B2E74003CCFC9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6424C0CA169205EF00C13F15 /* Security.framework */,
+				6424C0CD169205F900C13F15 /* ServiceManagement.framework */,
 				6451A368144B2E74003CCFC9 /* Cocoa.framework */,
 				6451A386144B2E74003CCFC9 /* SenTestingKit.framework */,
+				64232A3A1691F672008479FF /* Foundation.framework */,
 				6451A36A144B2E74003CCFC9 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -288,6 +368,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		64232A5C1691F8FA008479FF /* com.lark.software.TrogonHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 64232A671691F8FA008479FF /* Build configuration list for PBXNativeTarget "com.lark.software.TrogonHelper" */;
+			buildPhases = (
+				64232A591691F8FA008479FF /* Sources */,
+				64232A5A1691F8FA008479FF /* Frameworks */,
+				64232A5B1691F8FA008479FF /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = com.lark.software.TrogonHelper;
+			productName = TrogonHelper;
+			productReference = 64232A5D1691F8FA008479FF /* com.lark.software.TrogonHelper */;
+			productType = "com.apple.product-type.tool";
+		};
 		6451A363144B2E74003CCFC9 /* Trogon */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6451A396144B2E74003CCFC9 /* Build configuration list for PBXNativeTarget "Trogon" */;
@@ -295,10 +392,12 @@
 				6451A360144B2E74003CCFC9 /* Sources */,
 				6451A361144B2E74003CCFC9 /* Frameworks */,
 				6451A362144B2E74003CCFC9 /* Resources */,
+				6424C0CF16920E8100C13F15 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				64945BE1169338C400C009D7 /* PBXTargetDependency */,
 			);
 			name = Trogon;
 			productName = Trogon;
@@ -347,6 +446,7 @@
 			targets = (
 				6451A363144B2E74003CCFC9 /* Trogon */,
 				6451A384144B2E74003CCFC9 /* TrogonTests */,
+				64232A5C1691F8FA008479FF /* com.lark.software.TrogonHelper */,
 			);
 		};
 /* End PBXProject section */
@@ -400,6 +500,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		64232A591691F8FA008479FF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64232A621691F8FA008479FF /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6451A360144B2E74003CCFC9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -440,6 +548,11 @@
 			target = 6451A363144B2E74003CCFC9 /* Trogon */;
 			targetProxy = 6451A389144B2E74003CCFC9 /* PBXContainerItemProxy */;
 		};
+		64945BE1169338C400C009D7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 64232A5C1691F8FA008479FF /* com.lark.software.TrogonHelper */;
+			targetProxy = 64945BE0169338C400C009D7 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -478,12 +591,71 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		64232A681691F8FA008479FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TrogonHelper/TrogonHelper-Prefix.pch";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "TrogonHelper/TrogonHelper-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"TrogonHelper/TrogonHelper-Info.plist",
+					"-sectcreate",
+					__TEXT,
+					__launchd_plist,
+					"TrogonHelper/TrogonHelper-Launchd.plist",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		64232A691691F8FA008479FF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "TrogonHelper/TrogonHelper-Prefix.pch";
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				INFOPLIST_FILE = "TrogonHelper/TrogonHelper-Info.plist";
+				INFOPLIST_PREPROCESS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					"TrogonHelper/TrogonHelper-Info.plist",
+					"-sectcreate",
+					__TEXT,
+					__launchd_plist,
+					"TrogonHelper/TrogonHelper-Launchd.plist",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
 		6451A394144B2E74003CCFC9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -501,6 +673,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -511,6 +684,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -521,6 +695,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -528,11 +703,13 @@
 		6451A397144B2E74003CCFC9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Trogon/Trogon-Prefix.pch";
 				INFOPLIST_FILE = "Trogon/Trogon-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -540,11 +717,13 @@
 		6451A398144B2E74003CCFC9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Trogon/Trogon-Prefix.pch";
 				INFOPLIST_FILE = "Trogon/Trogon-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -582,6 +761,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		64232A671691F8FA008479FF /* Build configuration list for PBXNativeTarget "com.lark.software.TrogonHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				64232A681691F8FA008479FF /* Debug */,
+				64232A691691F8FA008479FF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6451A35E144B2E74003CCFC9 /* Build configuration list for PBXProject "Trogon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

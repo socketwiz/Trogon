@@ -9,7 +9,7 @@
 	<key>CFBundleIconFile</key>
 	<string>trogon.icns</string>
 	<key>CFBundleIdentifier</key>
-	<string>lark.software.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.lark.software.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -32,5 +32,10 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SMPrivilegedExecutables</key>
+	<dict>
+		<key>com.lark.software.TrogonHelper</key>
+		<string>identifier com.lark.software.TrogonHelper and certificate leaf[subject.CN] = &quot;Mac Developer: Ricky Nelson (YGB67996J6)&quot;</string>
+	</dict>
 </dict>
 </plist>

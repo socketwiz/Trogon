@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'TrogonHelper' target in the 'TrogonHelper' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
