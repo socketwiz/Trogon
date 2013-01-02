@@ -7,7 +7,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>trogon.icns</string>
+	<string>trogon</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.lark.software.${PRODUCT_NAME:rfc1034identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -35,7 +35,7 @@
 	<key>SMPrivilegedExecutables</key>
 	<dict>
 		<key>com.lark.software.TrogonHelper</key>
-		<string>identifier com.lark.software.TrogonHelper and certificate leaf[subject.CN] = &quot;Mac Developer: Ricky Nelson (YGB67996J6)&quot;</string>
+		<string>identifier com.lark.software.TrogonHelper and certificate leaf[subject.CN] = "Mac Developer: Ricky Nelson (YGB67996J6)"</string>
 	</dict>
 </dict>
 </plist>

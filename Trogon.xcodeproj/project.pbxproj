@@ -16,7 +16,6 @@
 		641C276914DECD3D000E4BAA /* GemServerSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 641C276814DECD3D000E4BAA /* GemServerSheet.xib */; };
 		641C276D14DECD62000E4BAA /* GemServerSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 641C276C14DECD62000E4BAA /* GemServerSheetController.m */; };
 		64232A271691F0A1008479FF /* RubyDocSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64232A261691F0A1008479FF /* RubyDocSheet.xib */; };
-		64232A291691F15B008479FF /* trogon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 64232A281691F15B008479FF /* trogon.icns */; };
 		64232A5F1691F8FA008479FF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 64232A3A1691F672008479FF /* Foundation.framework */; };
 		64232A621691F8FA008479FF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 64232A611691F8FA008479FF /* main.m */; };
 		6424C0CB169205EF00C13F15 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6424C0CA169205EF00C13F15 /* Security.framework */; };
@@ -46,6 +45,7 @@
 		64B3176014DB7BA800350DC3 /* RvmSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64B3175F14DB7BA800350DC3 /* RvmSheet.xib */; };
 		64B3176314DB7BD500350DC3 /* RvmSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64B3176214DB7BD500350DC3 /* RvmSheetController.m */; };
 		64BCECD4144D0CD500D9391F /* NSString+trimTrailingWhitespace.m in Sources */ = {isa = PBXBuildFile; fileRef = 64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */; };
+		64D7A35F1693E08600BB6FAD /* trogon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = 64D7A35E1693E08600BB6FAD /* trogon.iconset */; };
 		64E790FD144E5F7000741803 /* ProgressSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = 64E790FC144E5F7000741803 /* ProgressSheet.xib */; };
 		64E79101144E5F8200741803 /* ProgressSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = 64E79100144E5F8200741803 /* ProgressSheetController.m */; };
 /* End PBXBuildFile section */
@@ -102,7 +102,6 @@
 		641C276B14DECD62000E4BAA /* GemServerSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GemServerSheetController.h; sourceTree = "<group>"; };
 		641C276C14DECD62000E4BAA /* GemServerSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GemServerSheetController.m; sourceTree = "<group>"; };
 		64232A261691F0A1008479FF /* RubyDocSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RubyDocSheet.xib; sourceTree = "<group>"; };
-		64232A281691F15B008479FF /* trogon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = trogon.icns; sourceTree = "<group>"; };
 		64232A3A1691F672008479FF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		64232A5D1691F8FA008479FF /* com.lark.software.TrogonHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.lark.software.TrogonHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		64232A611691F8FA008479FF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -155,6 +154,7 @@
 		64B3176214DB7BD500350DC3 /* RvmSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RvmSheetController.m; sourceTree = "<group>"; };
 		64BCECD2144D0CD500D9391F /* NSString+trimTrailingWhitespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+trimTrailingWhitespace.h"; sourceTree = "<group>"; };
 		64BCECD3144D0CD500D9391F /* NSString+trimTrailingWhitespace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+trimTrailingWhitespace.m"; sourceTree = "<group>"; };
+		64D7A35E1693E08600BB6FAD /* trogon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = trogon.iconset; sourceTree = "<group>"; };
 		64E790FC144E5F7000741803 /* ProgressSheet.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressSheet.xib; sourceTree = "<group>"; };
 		64E790FF144E5F8200741803 /* ProgressSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressSheetController.h; sourceTree = "<group>"; };
 		64E79100144E5F8200741803 /* ProgressSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressSheetController.m; sourceTree = "<group>"; };
@@ -268,6 +268,7 @@
 		6451A36F144B2E74003CCFC9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				64D7A35E1693E08600BB6FAD /* trogon.iconset */,
 				6451A377144B2E74003CCFC9 /* Credits.rtf */,
 				6451A371144B2E74003CCFC9 /* InfoPlist.strings */,
 				6451A374144B2E74003CCFC9 /* main.m */,
@@ -280,7 +281,6 @@
 				64072FAA14DD784300B78DD8 /* terminal.icns */,
 				6451A370144B2E74003CCFC9 /* Trogon-Info.plist */,
 				6451A376144B2E74003CCFC9 /* Trogon-Prefix.pch */,
-				64232A281691F15B008479FF /* trogon.icns */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -465,7 +465,7 @@
 				64072FB214DDF19000B78DD8 /* ruby_doc.icns in Resources */,
 				641C276914DECD3D000E4BAA /* GemServerSheet.xib in Resources */,
 				64232A271691F0A1008479FF /* RubyDocSheet.xib in Resources */,
-				64232A291691F15B008479FF /* trogon.icns in Resources */,
+				64D7A35F1693E08600BB6FAD /* trogon.iconset in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
