@@ -21,6 +21,7 @@
 @synthesize gems = _gems;
 @synthesize ruby = _ruby;
 @synthesize taskOutput = _taskOutput;
+@synthesize shellWrapper = _shellWrapper;
 
 @synthesize tblRvm = _tblRvm;
 @synthesize tblGemset = _tblGemset;
@@ -37,8 +38,6 @@
         _gemsets = [[NSMutableArray alloc] init];
         _gems = [[NSMutableArray alloc] init];
         _taskOutput = [[NSMutableString alloc] init];
-        _isReloadingGemSets = NO;
-        _isReloadingGems = NO;
         
         _ruby = [[Ruby alloc] init];
     }
@@ -174,13 +173,6 @@
 	return result;
 }
 
-- (void)setShellWrapper:(AMShellWrapper *)newShellWrapper
-{
-	if (newShellWrapper != shellWrapper) {
-		shellWrapper = newShellWrapper;
-	}
-}
-
 // ============================================================
 // conforming to the AMShellWrapperDelegate protocol:
 // ============================================================
@@ -219,7 +211,11 @@
 // when a process is halted.
 - (void)processFinished:(AMShellWrapper *)wrapper withTerminationStatus:(int)resultCode
 {
-	[self setShellWrapper:nil];
+    // we need to remove the observer otherwise if we attempt to run simultaneous tasks,
+    // a notification will try to run against an observer that no longer exists
+    // and create an exception
+    [[NSNotificationCenter defaultCenter] removeObserver:self.shellWrapper];
+
 //	[progressIndicator stopAnimation:self];
 
     switch (currentState) {
@@ -256,7 +252,11 @@
         
         [NSApp presentError:error];
     }
-	[self setShellWrapper:nil];
+
+    // we need to remove the observer otherwise if we attempt to run simultaneous tasks,
+    // a notification will try to run against an observer that no longer exists
+    // and create an exception
+    [[NSNotificationCenter defaultCenter] removeObserver:self.shellWrapper];
 }
 
 // ============================================================
@@ -272,12 +272,20 @@
                                                               arguments:[NSArray arrayWithObjects:@"/bin/bash", @"-c", rvmCmd, nil]
                                                                 context:NULL];
     [wrapper setDelegate:self];
-    [self setShellWrapper:wrapper];
+
+    if (self.shellWrapper) {
+        // we need to remove the observer otherwise if we attempt to run simultaneous tasks,
+        // a notification will try to run against an observer that no longer exists
+        // and create an exception
+		[[NSNotificationCenter defaultCenter] removeObserver:self.shellWrapper];
+    }
+    
+    self.shellWrapper = wrapper;
     
     @try {
-        if (shellWrapper) {
-            [shellWrapper setOutputStringEncoding:NSUTF8StringEncoding];
-            [shellWrapper startProcess];
+        if (self.shellWrapper) {
+            [self.shellWrapper setOutputStringEncoding:NSUTF8StringEncoding];
+            [self.shellWrapper startProcess];
         } else {
             NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:@"Error creating shell wrapper" forKey:@"NSTaskErrorMessage"];
             
@@ -445,7 +453,7 @@
 }
 
 - (void)stopGemServer:(NSNotification *)notification {
-    [shellWrapper stopProcess];
+    [self.shellWrapper stopProcess];
 }
 
 - (void)reloadRubys {
@@ -505,9 +513,7 @@
             return;
         }
 
-        if (_isReloadingGemSets == NO) {
-            [self reloadGemsetList];
-        }
+        [self reloadGemsetList];
     }
 
 	if ([aNotification object] == _tblGemset) {
@@ -515,14 +521,11 @@
             return;
         }
         
-        if (_isReloadingGems == NO) {
-            [self reloadGemList];
-        }
+        [self reloadGemList];
     }
 }
 
 - (void)reloadGemsetList {
-    _isReloadingGemSets = YES;
     self.ruby = [[self.aryRubyController selectedObjects] objectAtIndex:0];
 
     currentState = READ_GEMSETS;
@@ -561,12 +564,9 @@
         [self.gemsets addObject:aGemSet];
         self.gemsets = self.gemsets;
     }
-    
-    _isReloadingGemSets = NO;
 }
 
 - (void)reloadGemList {
-    _isReloadingGems = YES;
     if ([[self.aryGemSetsController selectedObjects] count] == 0) {
         return;
     }
@@ -607,7 +607,6 @@
         [self.gems addObject:aGem];
         self.gems = self.gems;
     }
-    _isReloadingGems = NO;
 }
 
 - (void)readRubyDocs:(NSString *)output {

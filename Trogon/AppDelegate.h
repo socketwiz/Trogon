@@ -27,10 +27,7 @@ enum STATES {
 };
 
 @interface AppDelegate : NSObject <AMShellWrapperDelegate, NSApplicationDelegate> {
-    AMShellWrapper *shellWrapper;
     Ruby *_ruby;
-    BOOL _isReloadingGemSets;
-    BOOL _isReloadingGems;
     
     int currentState;
 }
@@ -41,6 +38,7 @@ enum STATES {
 @property (retain, readwrite) NSMutableArray *gems;
 @property (retain, readwrite) Ruby *ruby;
 @property (retain, readwrite) NSMutableString *taskOutput;
+@property (retain, readwrite) AMShellWrapper *shellWrapper;
 
 @property (weak) IBOutlet NSTableView *tblRvm;
 @property (weak) IBOutlet NSTableView *tblGemset;
