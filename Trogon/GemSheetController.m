@@ -52,7 +52,7 @@
     
     if (returnCode == NSOKButton) {
         NSString *gemset = [txtGem stringValue];
-        NSDictionary *info = [NSDictionary dictionaryWithObject:gemset forKey:@"gem"];
+        NSDictionary *info = @{@"gem": gemset};
         
         // we need to cleanup _before_ we send the notification below to create a new sheet
         // otherwise things get wonky because the new sheet will get created before this one

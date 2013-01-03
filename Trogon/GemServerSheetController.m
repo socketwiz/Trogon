@@ -87,7 +87,7 @@
     [self.txtViewGemServerOutput insertText:serverText];
     [self.txtViewGemServerOutput setEditable:NO];
 
-    NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:_port, @"port", nil ];
+    NSDictionary *data = @{@"port": _port};
     [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonStartGemServer" 
                                                         object:self
                                                       userInfo:data];

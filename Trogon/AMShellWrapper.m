@@ -41,6 +41,23 @@
 
 
 @implementation AMShellWrapper
+@synthesize task = _task;
+@synthesize delegate = _delegate;
+@synthesize workingDirectory = _workingDirectory;
+@synthesize environment = _environment;
+@synthesize arguments = _arguments;
+@synthesize stdinPipe = _stdinPipe;
+@synthesize stdoutPipe = _stdoutPipe;
+@synthesize stderrPipe = _stderrPipe;
+@synthesize stdinHandle = _stdinHandle;
+@synthesize stdoutHandle = _stdoutHandle;
+@synthesize stderrHandle = _stderrHandle;
+@synthesize inputStringEncoding = _inputStringEncoding;
+@synthesize outputStringEncoding = _outputStringEncoding;
+@synthesize binaryOutput = _binaryOutput;
+@synthesize stdoutEmpty = _stdoutEmpty;
+@synthesize stderrEmpty = _stderrEmpty;
+@synthesize taskDidTerminate = _taskDidTerminate;
 
 // Do basic initialization
 
@@ -50,65 +67,31 @@
        workingDirectory:(NSString *)directoryPath
             environment:(NSDictionary *)env
               arguments:(NSArray *)args
-                context:(void *)pointer
 {
 	if ((self = [super init])) {
-		context = pointer;
-		arguments = args;
-		environment = env;
-		workingDirectory = directoryPath;
-		stdinPipe = input;
-		stdoutPipe = output;
-		stderrPipe = error;
-		inputStringEncoding = NSUTF8StringEncoding;
-		outputStringEncoding = NSUTF8StringEncoding;
+        if (args) {
+            _arguments = args;
+        }
+        if (env) {
+            _environment = env;
+        }
+        if (directoryPath) {
+            _workingDirectory = directoryPath;
+        }
+        if (input) {
+            _stdinPipe = input;
+        }
+        if (output) {
+            _stdoutPipe = output;
+        }
+        if (error) {
+            _stderrPipe = error;
+        }
+
+		_inputStringEncoding = NSUTF8StringEncoding;
+		_outputStringEncoding = NSUTF8StringEncoding;
 	}
 	return self;
-}
-
-// tear things down
-
-- (id)delegate
-{
-	return delegate;
-}
-
-- (void)setDelegate:(id <AMShellWrapperDelegate>)newDelegate
-{
-	// do not retain
-	if (newDelegate != delegate) {
-		delegate = newDelegate;
-	}
-}
-
-- (void *)context
-{
-	return context;
-}
-
-- (BOOL)binaryOutput
-{
-	return binaryOutput;
-}
-
-- (void)setBinaryOutput:(BOOL)flag
-{
-	if (flag != binaryOutput) {
-		binaryOutput = flag;
-	}
-}
-
-
-// If you need something else than UTF8, set the code type of the task's input here
-- (void)setInputStringEncoding:(NSStringEncoding)newInputStringEncoding
-{
-	inputStringEncoding = newInputStringEncoding;
-}
-
-// If you need something else than UTF8, tell the task what coding to use for output here
-- (void)setOutputStringEncoding:(NSStringEncoding)newOutputStringEncoding
-{
-	outputStringEncoding = newOutputStringEncoding;
 }
 
 // Here's where we actually kick off the process via an NSTask.
@@ -116,16 +99,16 @@
 {
 	BOOL error = NO;
 	// We first let the controller know that we are starting
-	[delegate processStarted:self];
-	task = [[NSTask alloc] init];
+	[self.delegate processStarted:self];
+	self.task = [[NSTask alloc] init];
 	// The output of stdout and stderr is sent to a pipe so that we can catch it later
 	// and send it along to the controller; we redirect stdin too, so that it accepts
 	// input from us instead of the console
-	if (stdinPipe == nil) {
+	if (self.stdinPipe == nil) {
 		NSPipe *newPipe = [[NSPipe alloc] init];
 		if (newPipe) {
-			[task setStandardInput:newPipe];
-			stdinHandle = [[task standardInput] fileHandleForWriting];
+			[self.task setStandardInput:newPipe];
+			self.stdinHandle = [[self.task standardInput] fileHandleForWriting];
 			// we do NOT retain stdinHandle here since it is retained (and released)
 			// by the task standardInput pipe (or so I hope ...)
 		} else {
@@ -133,55 +116,55 @@
 			error = YES;
 		}
 	} else {
-		[task setStandardInput:stdinPipe];
-		if ([stdinPipe isKindOfClass:[NSPipe class]])
-			stdinHandle = [stdinPipe fileHandleForWriting];
+		[self.task setStandardInput:self.stdinPipe];
+		if ([self.stdinPipe isKindOfClass:[NSPipe class]])
+			self.stdinHandle = [self.stdinPipe fileHandleForWriting];
 		else
-			stdinHandle = stdinPipe;
+			self.stdinHandle = self.stdinPipe;
 	}
 	
-	if (stdoutPipe == nil) {
+	if (self.stdoutPipe == nil) {
 		NSPipe *newPipe = [[NSPipe alloc] init];
 		if (newPipe) {
-			[task setStandardOutput:newPipe];
-			stdoutHandle = [[task standardOutput] fileHandleForReading];
+			[self.task setStandardOutput:newPipe];
+			self.stdoutHandle = [[self.task standardOutput] fileHandleForReading];
 		} else {
 			perror("AMShellWrapper - failed to create pipe for stdOut");
 			error = YES;
 		}
 	} else {
-		[task setStandardOutput:stdoutPipe];
-		stdoutHandle = stdoutPipe;
+		[self.task setStandardOutput:self.stdoutPipe];
+		self.stdoutHandle = self.stdoutPipe;
 	}
 	
-	if (stderrPipe == nil) {
+	if (self.stderrPipe == nil) {
 		NSPipe *newPipe = [[NSPipe alloc] init];
 		if (newPipe) {
-			[task setStandardError:newPipe];
-			stderrHandle = [[task standardError] fileHandleForReading];
+			[self.task setStandardError:newPipe];
+			self.stderrHandle = [[self.task standardError] fileHandleForReading];
 		} else {
 			perror("AMShellWrapper - failed to create pipe for stdErr");
 			error = YES;
 		}
 	} else {
-		[task setStandardError:stderrPipe];
-		stderrHandle = stderrPipe;
+		[self.task setStandardError:self.stderrPipe];
+		self.stderrHandle = self.stderrPipe;
 	}
 	
 	if (!error) {
 		// setting the current working directory
-		if (workingDirectory != nil)
-			[task setCurrentDirectoryPath:workingDirectory];
+		if (self.workingDirectory != nil)
+			[self.task setCurrentDirectoryPath:self.workingDirectory];
 		
 		// Setting the environment if available
-		if (environment != nil)
-			[task setEnvironment:environment];
+		if (self.environment != nil)
+			[self.task setEnvironment:self.environment];
 		
 		// The path to the binary is the first argument that was passed in
-		[task setLaunchPath:[arguments objectAtIndex:0]];
+		[self.task setLaunchPath:self.arguments[0]];
 		
 		// The rest of the task arguments are just grabbed from the array
-		[task setArguments:[arguments subarrayWithRange:NSMakeRange(1, ([arguments count] - 1))]];
+		[self.task setArguments:[self.arguments subarrayWithRange:NSMakeRange(1, ([self.arguments count] - 1))]];
 		
 		// Here we register as an observer of the NSFileHandleReadCompletionNotification,
 		// which lets us know when there is data waiting for us to grab it in the task's file
@@ -190,37 +173,37 @@
 		// is because if the file handle gets filled up, the task will block waiting to send
 		// data and we'll never get anywhere. So we have to keep reading data from the file
 		// handle as we go.
-		if (stdoutPipe == nil) // we have to handle this ourselves:
+		if (self.stdoutPipe == nil) // we have to handle this ourselves:
 			[[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(getData:)
                                                          name:NSFileHandleReadCompletionNotification
-                                                       object:stdoutHandle];
+                                                       object:self.stdoutHandle];
 		
-		if (stderrPipe == nil) // we have to handle this ourselves:
+		if (self.stderrPipe == nil) // we have to handle this ourselves:
 			[[NSNotificationCenter defaultCenter] addObserver:self
                                                      selector:@selector(getData:)
                                                          name:NSFileHandleReadCompletionNotification
-                                                       object:stderrHandle];
+                                                       object:self.stderrHandle];
 		
 		// We tell the file handle to go ahead and read in the background asynchronously,
 		// and notify us via the callback registered above when we signed up as an observer.
 		// The file handle will send a NSFileHandleReadCompletionNotification when it has
 		// data that is available.
-		[stdoutHandle readInBackgroundAndNotify];
-		[stderrHandle readInBackgroundAndNotify];
+		[self.stdoutHandle readInBackgroundAndNotify];
+		[self.stderrHandle readInBackgroundAndNotify];
 		
 		// since waiting for the output pipes to run dry seems unreliable in terms of
 		// deciding wether the task has died, we go the 'clean' route and wait for a notification
 		[[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(taskStopped:)
-                                                     name:NSTaskDidTerminateNotification object:task];
+                                                     name:NSTaskDidTerminateNotification object:self.task];
 		
 		// we will wait for data in stdout; there may be nothing to receive from stderr
-		stdoutEmpty = NO;
-		stderrEmpty = YES;
+		self.stdoutEmpty = NO;
+		self.stderrEmpty = YES;
 		
 		// launch the task asynchronously
-		[task launch];
+		[self.task launch];
 		
 		// since the notification center does not retain the observer, make sure
 		// we don't get deallocated early
@@ -232,7 +215,7 @@
 // terminate the task
 - (void)stopProcess
 {
-	[task terminate];
+	[self.task terminate];
 }
 
 // If the task ends, there is no more data coming through the file handle even when
@@ -242,7 +225,7 @@
 	NSData *data;
 	int terminationStatus = -1;
 	
-	if (taskDidTerminate) {
+	if (self.isTaskTerminated) {
 		// It is important to clean up after ourselves so that we don't leave potentially
 		// deallocated objects as observers in the notification center; this can lead to
 		// crashes.
@@ -255,35 +238,23 @@
 		// Umm - OK. It comes back when the file is closed. So here we go ...
 		
 		// clear stdout
-		while ((data = [stdoutHandle availableData]) && [data length]) {
+		while ((data = [self.stdoutHandle availableData]) && [data length]) {
 			[self appendOutput:data];
 		}
 		
 		// clear stderr
-		while ((data = [stderrHandle availableData]) && [data length]) {
+		while ((data = [self.stderrHandle availableData]) && [data length]) {
 			[self appendError:data];
 		}
-		terminationStatus = [task terminationStatus];
+		terminationStatus = [self.task terminationStatus];
 	}
 	
 	// we tell the controller that we finished, via the callback, and then blow away
 	// our connection to the controller.  NSTasks are one-shot (not for reuse), so we
 	// might as well be too.
-	[delegate processFinished:self withTerminationStatus:terminationStatus];
+	[self.delegate processFinished:self withTerminationStatus:terminationStatus];
 
-	/*
-	NSDictionary *userInfo = nil;
-	// task has to go so we can't put it in a dictionary ...
-	if (task) {
-		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[[task retain] autorelease], AMShellWrapperProcessFinishedNotificationTaskKey, [NSNumber numberWithInt:terminationStatus], AMShellWrapperProcessFinishedNotificationTerminationStatusKey, nil];
-	} else {
-		userInfo = [NSDictionary dictionaryWithObjectsAndKeys:[NSNull null], AMShellWrapperProcessFinishedNotificationTaskKey, [NSNumber numberWithInt:terminationStatus], AMShellWrapperProcessFinishedNotificationTerminationStatusKey, nil];
-	}
-	
-	[[NSNotificationCenter defaultCenter] postNotificationName:AMShellWrapperProcessFinishedNotification object:self userInfo:userInfo];
-	*/
-	
-	delegate = nil;
+	self.delegate = nil;
 
 	// we are done; go ahead and kill us if you like ...
 }
@@ -292,9 +263,9 @@
 - (void)appendInput:(id)input
 {
 	if ([input isKindOfClass:[NSString class]]) {
-		[stdinHandle writeData:[input dataUsingEncoding:inputStringEncoding]];
+		[self.stdinHandle writeData:[input dataUsingEncoding:self.inputStringEncoding]];
 	} else if ([input isKindOfClass:[NSData class]]) {
-		[stdinHandle writeData:input];
+		[self.stdinHandle writeData:input];
 	} else {
 		NSLog(@"AMShellWrapper -appendInput expects NSString or NSData parameter (found: %@)", NSStringFromClass([input class]));
 	}
@@ -303,30 +274,30 @@
 
 - (void)closeInput
 {
-	[stdinHandle closeFile];
+	[self.stdinHandle closeFile];
 }
 
 - (void)appendOutput:(NSData *)data
 {
-	if (binaryOutput) {
-		[delegate process:self appendOutput:data];
+	if (self.isBinaryOutput) {
+		[self.delegate process:self appendOutput:data];
 	} else {
-		NSString *outputString = [[NSString alloc] initWithData:data encoding:outputStringEncoding];
+		NSString *outputString = [[NSString alloc] initWithData:data encoding:self.outputStringEncoding];
 		if (outputString) {
-			[delegate process:self appendOutput:outputString];
+			[self.delegate process:self appendOutput:outputString];
 		} else {
-			NSLog(@"AMShellWrapper - not able to encode output. Specified encoding: %u", (unsigned int)outputStringEncoding);
+			NSLog(@"AMShellWrapper - not able to encode output. Specified encoding: %u", (unsigned int)self.outputStringEncoding);
 		}
 	}
 }
 
 - (void)appendError:(NSData *)data
 {
-	NSString *errorString = [[NSString alloc] initWithData:data encoding:outputStringEncoding];
+	NSString *errorString = [[NSString alloc] initWithData:data encoding:self.outputStringEncoding];
 	if (errorString) {
-		[delegate process:self appendError:errorString];
+		[self.delegate process:self appendError:errorString];
 	} else {
-		NSLog(@"AMShellWrapper - not able to encode output. Specified encoding: %u", (unsigned int)outputStringEncoding);
+		NSLog(@"AMShellWrapper - not able to encode output. Specified encoding: %u", (unsigned int)self.outputStringEncoding);
 	}
 }
 
@@ -338,7 +309,7 @@
 	id notificationObject;
 	
 	notificationObject = [aNotification object];
-	data = [[aNotification userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	data = [aNotification userInfo][NSFileHandleNotificationDataItem];
 	
 	// If the length of the data is zero, then the task is basically over - there is nothing
 	// more to get from the handle so we may as well shut down.
@@ -346,12 +317,12 @@
 		// Send the data on to the controller; we can't just use +stringWithUTF8String: here
 		// because -[data bytes] is not necessarily a properly terminated string.
 		// -initWithData:encoding: on the other hand checks -[data length]
-		if ([notificationObject isEqualTo:stdoutHandle]) {
+		if ([notificationObject isEqualTo:self.stdoutHandle]) {
 			[self appendOutput:data];
-			stdoutEmpty = NO;
-		} else if ([notificationObject isEqualTo:stderrHandle]) {
+			self.stdoutEmpty = NO;
+		} else if ([notificationObject isEqualTo:self.stderrHandle]) {
 			[self appendError:data];
-			stderrEmpty = NO;
+			self.stderrEmpty = NO;
 		} else {
 			// this should really not happen ...
 		}
@@ -359,15 +330,15 @@
 		// we need to schedule the file handle go read more data in the background again.
 		[notificationObject readInBackgroundAndNotify];
 	} else {
-		if ([notificationObject isEqualTo:stdoutHandle]) {
-			stdoutEmpty = YES;
-		} else if ([notificationObject isEqualTo:stderrHandle]) {
-			stderrEmpty = YES;
+		if ([notificationObject isEqualTo:self.stdoutHandle]) {
+			self.stdoutEmpty = YES;
+		} else if ([notificationObject isEqualTo:self.stderrHandle]) {
+			self.stderrEmpty = YES;
 		} else {
 			// this should really not happen ...
 		}
 		// if there is no more data in the pipe AND the task did terminate, we are done
-		if (stdoutEmpty && stderrEmpty && taskDidTerminate) {
+		if (self.isStdoutEmpty && self.isStderrEmpty && self.isTaskTerminated) {
 			[self cleanup];
 		}
 	}
@@ -378,10 +349,10 @@
 
 - (void)taskStopped:(NSNotification *)aNotification
 {
-	if (!taskDidTerminate) {
-		taskDidTerminate = YES;
+	if (!self.isTaskTerminated) {
+		self.taskDidTerminate = YES;
 		// did we receive all data?
-		if (stdoutEmpty && stderrEmpty) {
+		if (self.isStdoutEmpty && self.isStderrEmpty) {
 			// no data left - do the clean up
 			[self cleanup];
 		}

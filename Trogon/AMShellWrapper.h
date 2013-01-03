@@ -14,7 +14,6 @@
 //  - added process parameter to append... methods
 //  - changed parameter type of processStarted: and processFinished: methods
 //  - removed controller argument from initializer
-//  - added context parameter to initializer
 //  - added binaryOutput option; changed -process:appendOutput: accordingly
 //  - appendInput now accepts input as NSData or NSString
 
@@ -55,33 +54,32 @@
 
 
 @interface AMShellWrapper : NSObject {
-	NSTask *task;
-	id <AMShellWrapperDelegate>delegate;
-	void *context;
-	NSString *workingDirectory;
-	NSDictionary *environment;
-	NSArray *arguments;
-	id stdinPipe;
-	id stdoutPipe;
-	id stderrPipe;
-	NSFileHandle *stdinHandle;
-	NSFileHandle	 *stdoutHandle;
-	NSFileHandle	 *stderrHandle;
-	NSStringEncoding inputStringEncoding;
-	NSStringEncoding outputStringEncoding;
-	BOOL binaryOutput;
-	BOOL stdoutEmpty;
-	BOOL stderrEmpty;
-	BOOL taskDidTerminate;
 }
+
+@property (nonatomic, strong) NSTask *task;
+@property (nonatomic, weak) id <AMShellWrapperDelegate> delegate;
+@property (nonatomic, copy) NSString *workingDirectory;
+@property (nonatomic, strong) NSDictionary *environment;
+@property (nonatomic, strong) NSArray *arguments;
+@property (nonatomic, strong) id stdinPipe;
+@property (nonatomic, strong) id stdoutPipe;
+@property (nonatomic, strong) id stderrPipe;
+@property (nonatomic, strong) NSFileHandle *stdinHandle;
+@property (nonatomic, strong) NSFileHandle *stdoutHandle;
+@property (nonatomic, strong) NSFileHandle *stderrHandle;
+@property (nonatomic) NSStringEncoding inputStringEncoding;
+@property (nonatomic) NSStringEncoding outputStringEncoding;
+@property (nonatomic, getter=isBinaryOutput) BOOL binaryOutput;
+@property (nonatomic, getter=isStdoutEmpty) BOOL stdoutEmpty;
+@property (nonatomic, getter=isStderrEmpty) BOOL stderrEmpty;
+@property (nonatomic, getter=isTaskTerminated) BOOL taskDidTerminate;
 
 - (id)initWithInputPipe:(id)input
              outputPipe:(id)output
               errorPipe:(id)error
        workingDirectory:(NSString *)directoryPath
             environment:(NSDictionary *)env
-              arguments:(NSArray *)args
-                context:(void *)context;
+              arguments:(NSArray *)args;
 // This is the designated initializer
 // The first argument should be the path to the executable to launch with the NSTask.
 // Allowed for stdin/stdout and stderr are
@@ -91,21 +89,6 @@
 //   and appendInput: method and provides asynchronous feedback notifications.
 // The environment argument may be nil in which case the environment is inherited from
 // the calling process.
-
-
-- (id)delegate;
-- (void)setDelegate:(id <AMShellWrapperDelegate>)delegate;
-
-- (void *)context;
-
-- (BOOL)binaryOutput;	// default is NO
-- (void)setBinaryOutput:(BOOL)flag;
-
-- (void)setInputStringEncoding:(NSStringEncoding)newInputStringEncoding;
-// If you need something else than UTF8, set the encoding type of the task's input here
-
-- (void)setOutputStringEncoding:(NSStringEncoding)newOutputStringEncoding;
-// If you need something else than UTF8, tell the task what encoding to use for output here
 
 - (void)startProcess;
 // This method launches the process, setting up asynchronous feedback notifications.

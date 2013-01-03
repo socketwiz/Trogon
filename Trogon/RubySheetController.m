@@ -38,7 +38,7 @@
 // output from stderr
 - (void)process:(AMShellWrapper *)wrapper appendError:(NSString *)error
 {
-    NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:error forKey:@"NSTaskErrorMessage"];
+    NSDictionary *errorInfo = @{@"NSTaskErrorMessage": error};
     
     if (errorInfo) {
         NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
@@ -97,8 +97,7 @@
                                                               errorPipe:nil
                                                        workingDirectory:@"."
                                                             environment:nil
-                                                              arguments:[NSArray arrayWithObjects:@"/bin/bash", @"-c", rvmCmd, nil]
-                                                                context:NULL];
+                                                              arguments:@[@"/bin/bash", @"-c", rvmCmd]];
     [wrapper setDelegate:self];
     [self setShellWrapper:wrapper];
     
@@ -107,7 +106,7 @@
             [shellWrapper setOutputStringEncoding:NSUTF8StringEncoding];
             [shellWrapper startProcess];
         } else {
-            NSDictionary *errorInfo = [NSDictionary dictionaryWithObject:@"Error creating shell wrapper" forKey:@"NSTaskErrorMessage"];
+            NSDictionary *errorInfo = @{@"NSTaskErrorMessage": @"Error creating shell wrapper"};
             
             if (errorInfo) {
                 NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
@@ -194,8 +193,8 @@
               contextInfo:(void  *)contextInfo {
     
     if (returnCode == NSOKButton) {
-        Ruby *rvm = [[self.aryRvmsController selectedObjects] objectAtIndex:0];
-        NSDictionary *info = [NSDictionary dictionaryWithObject:rvm forKey:@"ruby"];
+        Ruby *rvm = [self.aryRvmsController selectedObjects][0];
+        NSDictionary *info = @{@"ruby": rvm};
         
         // we need to cleanup _before_ we send the notification below to create a new sheet
         // otherwise things get wonky because the new sheet will get created before this one

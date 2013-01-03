@@ -15,7 +15,7 @@
 - (NSString *)nameWithoutVersion {
     NSArray *parts = [self.name componentsSeparatedByString:@" "];
     
-    return [parts objectAtIndex:0];
+    return parts[0];
 }
 
 @end
