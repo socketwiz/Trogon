@@ -16,18 +16,23 @@
 #import "GemServerSheetController.h"
 #import "NSString+trimLeadingWhitespace.h"
 #import "NSString+trimTrailingWhitespace.h"
-#import "AMShellWrapper.h"
+#import "TaskStep.h"
 
-enum STATES {
-    NO_HANDLER,
-    READ_RUBYS,
-    READ_GEMSETS,
-    READ_GEMS,
-    READ_RUBYDOCS
-};
+@class ScriptQueue;
+@class PrioritySplitViewDelegate;
 
-@interface AppDelegate : NSObject <AMShellWrapperDelegate, NSApplicationDelegate> {
+typedef enum
+{
+	TrogonTaskRunning,
+	TrogonTaskFinished,
+	TrogonTaskFailed,
+	TrogonTaskCancelled
+} TrogonTaskState;
+
+@interface AppDelegate : NSObject <NSApplicationDelegate> {
     Ruby *_ruby;
+    TrogonTaskState state;
+    ScriptQueue *scriptQueue;
     
     int currentState;
 }
@@ -38,7 +43,8 @@ enum STATES {
 @property (retain, readwrite) NSMutableArray *gems;
 @property (retain, readwrite) Ruby *ruby;
 @property (retain, readwrite) NSMutableString *taskOutput;
-@property (retain, readwrite) AMShellWrapper *shellWrapper;
+@property (nonatomic, retain, readonly) ScriptQueue *scriptQueue;
+@property (retain, readwrite) TaskStep *currentTask;
 
 @property (weak) IBOutlet NSTableView *tblRvm;
 @property (weak) IBOutlet NSTableView *tblGemset;
