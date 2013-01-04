@@ -237,7 +237,7 @@
         [self readGemsetList:[self.currentTask outputString]];
     }
     if ([resolvedString localizedCompare:@"<ScriptValue: rvmDocsOpen>"] == NSOrderedSame) {
-        [self readRubyDocs:[self.currentTask outputString]];
+        [self readRubyDocs:[self.currentTask errorString]];
     }
 }
 
@@ -600,7 +600,7 @@
 }
 
 - (void)readRubyDocs:(NSString *)output {
-    if ([output hasPrefix:@"ERROR: rdoc docs are missing"]) {
+    if ([output hasPrefix:@"rdoc docs are missing"]) {
         [_sheetControllerRubyDoc add:self];
     }
 }
