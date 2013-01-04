@@ -426,11 +426,7 @@
 }
 
 - (void)stopGemServer:(NSNotification *)notification {
-    if ([[scriptQueue operations] count] > 0) {
-        for (NSOperation *operation in [scriptQueue operations]) {
-            [operation cancel];
-        }
-    }
+    [self.currentTask cancel];
 }
 
 - (void)reloadRubys {
