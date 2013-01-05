@@ -8,13 +8,12 @@
 
 #import <Foundation/Foundation.h>
 #import "Ruby.h"
-#import "AMShellWrapper.h"
+#import "TaskStep.h"
 
-@interface RubySheetController : NSObject <AMShellWrapperDelegate> {
+@interface RubySheetController : NSObject {
     NSView *documentWindow;
     NSPanel *objectSheet;
     NSMutableString *_outputRuby;
-    AMShellWrapper *shellWrapper;
     
     NSMutableArray *_rubys;
     __weak NSArrayController *aryRvmsController;
@@ -23,7 +22,6 @@
 @property (nonatomic, retain) IBOutlet NSPanel *objectSheet;
 @property (retain,readwrite) NSMutableArray *rubys;
 @property (weak) IBOutlet NSArrayController *aryRvmsController;
-@property (retain, readwrite) NSMutableString *outputRuby;
 @property (retain, readwrite) NSMutableString *taskOutput;
 
 

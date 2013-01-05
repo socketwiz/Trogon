@@ -16,22 +16,14 @@
 #import "GemServerSheetController.h"
 #import "NSString+trimLeadingWhitespace.h"
 #import "NSString+trimTrailingWhitespace.h"
+#import "ScriptQueue.h"
 #import "TaskStep.h"
 
 @class ScriptQueue;
 @class PrioritySplitViewDelegate;
 
-typedef enum
-{
-	TrogonTaskRunning,
-	TrogonTaskFinished,
-	TrogonTaskFailed,
-	TrogonTaskCancelled
-} TrogonTaskState;
-
 @interface AppDelegate : NSObject <NSApplicationDelegate> {
     Ruby *_ruby;
-    TrogonTaskState state;
     ScriptQueue *scriptQueue;
     
     int currentState;

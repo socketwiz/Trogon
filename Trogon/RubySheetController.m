@@ -14,124 +14,14 @@
 @synthesize documentWindow;
 @synthesize objectSheet;
 @synthesize rubys = _rubys;
-@synthesize outputRuby = _outputRuby;
 @synthesize taskOutput = _taskOutput;
 
 
-- (void)setShellWrapper:(AMShellWrapper *)newShellWrapper
-{
-	if (newShellWrapper != shellWrapper) {
-		shellWrapper = newShellWrapper;
-	}
-}
+-(void)readAvailableRubys:(NSNotification *)notification {
+    NSString *output = [notification userInfo][@"ouput"];
 
-// ============================================================
-// conforming to the AMShellWrapperDelegate protocol:
-// ============================================================
-
-// output from stdout
-- (void)process:(AMShellWrapper *)wrapper appendOutput:(id)output
-{
-    [self.taskOutput appendString:output];
-}
-
-// output from stderr
-- (void)process:(AMShellWrapper *)wrapper appendError:(NSString *)error
-{
-    NSDictionary *errorInfo = @{@"NSTaskErrorMessage": error};
-    
-    if (errorInfo) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        NSString *errorFromNSTask = [NSString stringWithFormat:@"NSTask Error: %@", [errorInfo valueForKey:@"NSTaskErrorMessage"]];
-        [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
-        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
-        
-        NSLog(@"%@", errorFromNSTask);
-        
-        [NSApp presentError:error];
-    }
-}
-
-// This method is a callback which your controller can use to do other initialization
-// when a process is launched.
-- (void)processStarted:(AMShellWrapper *)wrapper
-{
-    //	[progressIndicator startAnimation:self];
-}
-
-// This method is a callback which your controller can use to do other cleanup
-// when a process is halted.
-- (void)processFinished:(AMShellWrapper *)wrapper withTerminationStatus:(int)resultCode
-{
-	[self setShellWrapper:nil];
-    //	[progressIndicator stopAnimation:self];
-    
-    [self readAvailableRubys:self.taskOutput];
-    
-    [self.taskOutput setString:@""];
-}
-
-- (void)processLaunchException:(NSException *)exception
-{
-    //	[progressIndicator stopAnimation:self];
-    if (exception) {
-        NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-        NSString *errorFromNSTask = [exception name];
-        [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
-        NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
-        
-        NSLog(@"%@", errorFromNSTask);
-        
-        [NSApp presentError:error];
-    }
-	[self setShellWrapper:nil];
-}
-
-// ============================================================
-// END conforming to the AMShellWrapperDelegate protocol:
-// ============================================================
-
--(void)runTask:(NSString *)rvmCmd {
-    AMShellWrapper *wrapper = [[AMShellWrapper alloc] initWithInputPipe:nil
-                                                             outputPipe:nil
-                                                              errorPipe:nil
-                                                       workingDirectory:@"."
-                                                            environment:nil
-                                                              arguments:@[@"/bin/bash", @"-c", rvmCmd]];
-    [wrapper setDelegate:self];
-    [self setShellWrapper:wrapper];
-    
-    @try {
-        if (shellWrapper) {
-            [shellWrapper setOutputStringEncoding:NSUTF8StringEncoding];
-            [shellWrapper startProcess];
-        } else {
-            NSDictionary *errorInfo = @{@"NSTaskErrorMessage": @"Error creating shell wrapper"};
-            
-            if (errorInfo) {
-                NSMutableDictionary *errorDetail = [NSMutableDictionary dictionary];
-                NSString *errorFromNSTask = [NSString stringWithFormat:@"NSTask Error: %@", [errorInfo valueForKey:@"NSTaskErrorMessage"]];
-                [errorDetail setValue:errorFromNSTask forKey:NSLocalizedDescriptionKey];
-                NSError *error = [NSError errorWithDomain:@"trogon" code:100 userInfo:errorDetail];
-                
-                NSLog(@"NSTask Command: %@", rvmCmd);
-                NSLog(@"%@", errorFromNSTask);
-                
-                [NSApp presentError:error];
-            }
-        }
-    }
-    @catch (NSException *localException) {
-        NSLog(@"Caught %@: %@", [localException name], [localException reason]);
-        [self processLaunchException:localException];
-    }
-}
-
--(void)readAvailableRubys: (NSString *)output {
-    [self.outputRuby appendString:output];
-    
     // pull just the rubys out of the mess we get back
-    for (NSString *line in [self.outputRuby componentsSeparatedByString:@"\n"]) {
+    for (NSString *line in [output componentsSeparatedByString:@"\n"]) {
         if ([line length] > 0 && ![line hasPrefix:@"#"]) {
             Ruby *aRuby = [[Ruby alloc] init];
             aRuby.name = line;
@@ -145,9 +35,14 @@
     self = [super init];
     if (self) {
         _rubys = [[NSMutableArray alloc] init];
-        _outputRuby = [[NSMutableString alloc] init];
         _taskOutput = [[NSMutableString alloc] init];
     }
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(readAvailableRubys:)
+                                                 name:@"TrogonReadAvailableRubys"
+                                               object:nil];
+
     return self;
 }
 
@@ -171,7 +66,19 @@
     
     NSString *rvmPath = [NSString stringWithString:[@"~/.rvm/scripts/rvm" stringByExpandingTildeInPath]];
     NSString *rvmCmd = [NSString stringWithFormat:@"source %@ && rvm list known", rvmPath];
-    [self runTask:rvmCmd];
+    TaskStep *task = [TaskStep taskStepWithCommandLine:
+                      @"/bin/bash",
+                      @"-c",
+                      rvmCmd,
+                      [ScriptValue scriptValueWithKey:@"rvmListKnown"],
+                      nil];
+
+    // send it to the AppDelegate so we can run the task from a common NSOperationQueue
+    NSDictionary *info = @{@"task": task};
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonRvmListKnown"
+                                                        object:self
+                                                      userInfo:info];
     
     [NSApp beginSheet:objectSheet
        modalForWindow:[documentWindow window]

@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "ScriptQueue.h"
 #import <ServiceManagement/ServiceManagement.h>
 #import <Security/Authorization.h>
 
@@ -48,6 +47,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addRubysNotification:)
                                                  name:@"TrogonAddRuby" 
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(runNotificationTask:)
+                                                 name:@"TrogonRvmListKnown"
                                                object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(addGemsetNotification:)
@@ -190,7 +193,19 @@
     }
 
     [self.scriptQueue addOperation:self.currentTask];
-	state = TrogonTaskRunning;
+}
+
+-(void)runNotificationTask:(NSNotification *)notification {
+    if ([[self.scriptQueue operations] count] > 0) {
+        // cancel any currently running task before starting a new one
+        for (NSOperation *operation in [self.scriptQueue operations]) {
+            [operation cancel];
+        }
+    }
+
+    self.currentTask = [notification userInfo][@"task"];
+
+    [self.scriptQueue addOperation:self.currentTask];
 }
 
 //
@@ -204,20 +219,25 @@
 //    change - the change
 //    context - the context
 //
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary *)change context:(void *)context
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context
 {
 	if ([keyPath isEqual:@"operations"])
 	{
         if ([self.scriptQueue.operations count] == 0) {
             [self performSelectorOnMainThread:@selector(taskComplete)
-                                   withObject:nil waitUntilDone:NO];
+                                   withObject:nil
+                                waitUntilDone:NO];
         }
         
 		return;
 	}
 	
-	[super observeValueForKeyPath:keyPath ofObject:object change:change
+	[super observeValueForKeyPath:keyPath
+                         ofObject:object
+                           change:change
                           context:context];
 }
 
@@ -229,6 +249,14 @@
     
     if ([resolvedString localizedCompare:@"<ScriptValue: rvmList>"] == NSOrderedSame) {
         [self readRubyData:[self.currentTask outputString]];
+    }
+    if ([resolvedString localizedCompare:@"<ScriptValue: rvmListKnown>"] == NSOrderedSame) {
+        // send it back to RvmSheetController so it can handle to output
+        NSDictionary *info = @{@"ouput": [self.currentTask outputString]};
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"TrogonReadAvailableRubys"
+                                                            object:self
+                                                          userInfo:info];
     }
     if ([resolvedString localizedCompare:@"<ScriptValue: rvmGemList>"] == NSOrderedSame) {
         [self readGemList:[self.currentTask outputString]];
