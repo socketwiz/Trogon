@@ -113,12 +113,16 @@
     NSString *text;
     
     data = [[notification object] availableData];
-    text = [[NSString alloc] initWithData:data 
+    text = [[NSString alloc] initWithData:data
                                  encoding:NSASCIIStringEncoding];
     
-    [self.textViewProgress setEditable:YES];
-    [self.textViewProgress insertText:text];
-    [self.textViewProgress setEditable:NO];
+    // update UI in the main thread
+    dispatch_async(dispatch_get_main_queue(), ^
+    {
+        [self.textViewProgress setEditable:YES];
+        [self.textViewProgress insertText:text];
+        [self.textViewProgress setEditable:NO];
+    });
     
     if([data length]) {
         [[notification object] waitForDataInBackgroundAndNotify];
